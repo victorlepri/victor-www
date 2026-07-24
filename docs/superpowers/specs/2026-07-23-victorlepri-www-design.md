@@ -27,7 +27,7 @@ Total immersion. The entire viewport is one LED pixel matrix, inspired by Spøge
 
 ## 4. The rain
 
-Vertical blue and indigo drops on the coarse grid, computed per column from a hash: three layers with speeds around 5 to 15 rows per second (one slow stem layer at 0.7 to 1.6 times 0.55 intensity), lengths 7 to 22 cells, bright near white heads, sparse column occupancy (roughly one in five columns for fast layers, one in ten for stems). The rain never reacts to the cursor. That is a hard rule; a gravitational pull and a lens experiment were both rejected.
+Vertical blue and indigo drops on the coarse grid, computed per column from a hash: three layers with speeds around 5 to 15 rows per second (one slow stem layer at 0.7 to 1.6 times 0.55 intensity), lengths 7 to 22 cells, bright near white heads, sparse column occupancy (about one in six columns for fast layers, one in twelve for stems, roughly 20 percent lighter than the first cut). On load the sky is empty and the rain builds from the top: each column has a staggered start time (weighted so only a few fall at first) and its first drop enters from above and descends, the active rate ramping to full by about 13 seconds. No brightness fade; every drop is full intensity the moment it exists. The rain never reacts to the cursor. That is a hard rule; a gravitational pull and a lens experiment were both rejected.
 
 ## 5. The name
 
@@ -51,7 +51,7 @@ The cursor stirs the field like a hand through leaves, and it must feel angular,
 ## 7. Structure and overlays
 
 1. Home: the field, the name, and one glowing pixel word PROJECTS bottom center (pixel glyph canvas, shimmering, brighter on hover), fading in after about 2.6 seconds, plus a small ABOUT text button bottom right.
-2. Overlays dim the field to 26 percent and float panels over it; Escape, a return button, and (on about) a small top right times sign that rotates about 22 degrees on hover all close them. Interface buttons hide while an overlay is open.
+2. Overlays dim the field to 26 percent and float panels over it; Escape, a return button, a small times sign that rotates about 22 degrees on hover (top right of the about panel, and at the right edge of the projects heading), and a click on the empty space all close them. Interface buttons hide while an overlay is open. Opening a panel also triggers a time warp: the background clock eases almost to a stop (about 6 percent speed) so the rain and the color and transform evolution nearly freeze behind the panel, while the foreground UI (the nav words, the project marks) keeps full speed. Closing lets time flow back in. The background runs on a separately accumulated clock so the warp never affects the foreground.
 3. Projects overlay, two groups with pixel glyph headings:
    IT MANAGEMENT: CΘSMOS LABS (theta replaces the O), role line IT Director, description: "The core team driving the Cosmos blockchain ecosystem. Cosmos powers the largest network of vertically integrated Layer 1 blockchains; 150+ chains securing more than $70B in assets for payments, tokenization, and digital currencies." Link: cosmos.network.
    DEVELOPMENT: STOOP NYC, tag "Find your next place, together.", description: "An iOS and browser app for deciding your next home, with your people. Paste a listing, score it solo, then the Reveal shows everyone's take. The best fit wins. Free on the App Store." where App Store links to apps.apple.com/us/app/stoop-nyc/id6785723407. Link: stoopnyc.app.

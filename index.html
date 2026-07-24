@@ -477,11 +477,15 @@ float drops(vec2 c, float t){
   float best = 0.0;
   for(int L=0; L<3; L++){
     float h = hash12(vec2(c.x + floor(u_seed.x*3.0), float(L)*17.31));
-    if(h < (L==2 ? 0.90 : 0.80)) continue;
+    if(h < (L==2 ? 0.92 : 0.84)) continue;
     float sp = (L==2) ? mix(0.7,1.6,fract(h*5.1)) : mix(5.0,15.0,fract(h*7.7));
     float len = mix(7.0, 22.0, fract(h*13.1));
     float cyc = u_grid.y + len + mix(24.0, 120.0, fract(h*3.3));
-    float head = mod(t*sp + h*913.0, cyc) - len;
+    /* each column starts raining at a staggered time; the distribution is
+       weighted so only a few fall at first and the rate builds to full by ~13s */
+    float startT = pow(fract(h*57.0), 0.75) * 13.0;
+    float tt = max(t - startT, 0.0);
+    float head = mod(tt*sp, cyc) - len;
     float d = head - c.y;
     if(d >= 0.0 && d < len){
       float i = pow(1.0 - d/len, 1.7);
@@ -606,7 +610,7 @@ function program(fs){
   return p;
 }
 
-var state = {cols:0, rows:0, cellPx:14, dim:1, dimTarget:1, mouse:{x:-999,y:-999,tx:-999,ty:-999,vx:0,vy:0,s:0}};
+var state = {cols:0, rows:0, cellPx:14, dim:1, dimTarget:1, bgScale:1, bgScaleTarget:1, mouse:{x:-999,y:-999,tx:-999,ty:-999,vx:0,vy:0,s:0}};
 
 if(gl){
   var p1 = program(FS1), p2 = program(FS2);
@@ -696,14 +700,20 @@ if(gl){
   window.addEventListener("resize", resize);
   resize();
 
-  var t0 = performance.now(), paused = false;
+  var t0 = performance.now(), paused = false, lastNow = t0, bgT = 0;
   var timeScale = reduced ? 0.05 : 1.0;
-  document.addEventListener("visibilitychange", function(){ paused = document.hidden; });
+  document.addEventListener("visibilitychange", function(){ paused = document.hidden; lastNow = performance.now(); });
 
   function frame(){
     requestAnimationFrame(frame);
     if(paused) return;
-    var t = (performance.now() - t0)/1000 * timeScale;
+    var now = performance.now();
+    var dt = Math.min((now - lastNow)/1000, 0.05);
+    lastNow = now;
+    /* background clock eases to half speed while an overlay is open (time warp) */
+    state.bgScale += (state.bgScaleTarget - state.bgScale)*0.08;
+    bgT += dt * timeScale * state.bgScale;
+    var t = bgT;
     state.dim += (state.dimTarget - state.dim)*0.06;
     var pmx = state.mouse.x, pmy = state.mouse.y;
     state.mouse.x += (state.mouse.tx - state.mouse.x)*0.16;
@@ -793,12 +803,14 @@ notesBtn.addEventListener("mouseleave", function(){ hoverAbout = false; });
 function openOverlay(el){
   el.classList.add("open");
   state.dimTarget = 0.26;
+  state.bgScaleTarget = 0.06;
   navEl.style.display = "none";
 }
 function closeOverlays(){
   projects.classList.remove("open");
   notes.classList.remove("open");
   state.dimTarget = 1;
+  state.bgScaleTarget = 1;
   navEl.style.display = "";
 }
 projBtn.addEventListener("click", function(){ openOverlay(projects); });

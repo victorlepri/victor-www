@@ -85,7 +85,13 @@
     box-sizing:border-box;
     gap:6vh;
   }
-  .group{width:min(560px, 100%);}
+  .group{width:min(560px, 100%);position:relative;}
+  .group .close-x{
+    position:absolute;
+    top:2px;
+    right:0;
+    font-size:18px;
+  }
   .group-head{margin-bottom:22px;}
   .card{
     display:flex;
@@ -226,6 +232,7 @@
   <div class="overlay-inner">
     <div class="group">
       <canvas class="group-head" data-word="IT MANAGEMENT" data-scale="3" width="10" height="10"></canvas>
+      <button class="close-x" data-close aria-label="Close">&times;</button>
       <div class="card">
         <canvas class="thumb" id="thumbCosmos" width="24" height="24"></canvas>
         <div>
@@ -243,7 +250,7 @@
         <div>
           <h3>Stoop NYC</h3>
           <em class="tag">Find your next place, together.</em>
-          <p>An iOS and browser app for deciding your next home, with your people. Paste a listing, score it solo, then the Reveal shows everyone's take. The best fit wins. Free on the App Store as Stoop NYC.</p>
+          <p>An iOS and browser app for deciding your next home, with your people. Paste a listing, score it solo, then the Reveal shows everyone's take. The best fit wins. Free on the <a href="https://apps.apple.com/us/app/stoop-nyc/id6785723407" target="_blank" rel="noopener">App Store</a>.</p>
           <a href="https://stoopnyc.app" target="_blank" rel="noopener">stoopnyc.app</a>
         </div>
       </div>
@@ -364,8 +371,8 @@ precision highp float;
 uniform vec2 u_grid;
 uniform float u_t;
 uniform vec3 u_mouse;
-uniform vec2 u_mvel;
 uniform vec2 u_seed;
+uniform vec4 u_imps[12];
 uniform sampler2D u_mask;
 out vec4 o;
 
@@ -452,7 +459,20 @@ void main(){
   float jag = vnoise(md*0.45 + vec2(t*0.8, u_seed.x));
   float ig = exp(-dm*dm/90.0) * u_mouse.z * (0.55 + 0.90*jag);
   vec2 rdir = (dm > 0.0001) ? md/dm : vec2(0.0);
-  vec2 part = (rdir*0.8 + u_mvel*2.0) * ig;
+  vec2 part = rdir*0.8*ig;
+
+  float sway = 0.0;
+  for(int i=0;i<12;i++){
+    vec4 imp = u_imps[i];
+    float age = t - imp.z;
+    if(imp.z <= 0.0 || age < 0.0 || age > 2.5) continue;
+    vec2 dv = cell - (imp.xy - vec2(0.0, age*3.5));
+    float dmi = abs(dv.x) + abs(dv.y);
+    float k = exp(-dmi*dmi/80.0);
+    sway += imp.w * k * sin(age*6.0 - dmi*0.4) * exp(-age*1.6);
+  }
+  sway = clamp(sway, -1.4, 1.4);
+  part += vec2(sway, sway*0.22);
 
   vec2 pc = cell + part;
   float v = cascade(pc, t);
@@ -546,7 +566,9 @@ var state = {cols:0, rows:0, cellPx:14, dim:1, dimTarget:1, mouse:{x:-999,y:-999
 
 if(gl){
   var p1 = program(FS1), p2 = program(FS2);
-  var u1 = {grid:gl.getUniformLocation(p1,"u_grid"), t:gl.getUniformLocation(p1,"u_t"), mouse:gl.getUniformLocation(p1,"u_mouse"), mvel:gl.getUniformLocation(p1,"u_mvel"), mask:gl.getUniformLocation(p1,"u_mask"), seed:gl.getUniformLocation(p1,"u_seed")};
+  var u1 = {grid:gl.getUniformLocation(p1,"u_grid"), t:gl.getUniformLocation(p1,"u_t"), mouse:gl.getUniformLocation(p1,"u_mouse"), imps:gl.getUniformLocation(p1,"u_imps"), mask:gl.getUniformLocation(p1,"u_mask"), seed:gl.getUniformLocation(p1,"u_seed")};
+  var imps = new Float32Array(48);
+  var impIdx = 0, lastImp = -1;
   var seed = [Math.random()*89.0 + 13.0, Math.random()*61.0 + 7.0];
   var u2 = {res:gl.getUniformLocation(p2,"u_res"), grid:gl.getUniformLocation(p2,"u_grid"), cell:gl.getUniformLocation(p2,"u_cell"), t:gl.getUniformLocation(p2,"u_t"), dim:gl.getUniformLocation(p2,"u_dim"), field:gl.getUniformLocation(p2,"u_field")};
   var vao = gl.createVertexArray();
@@ -651,6 +673,16 @@ if(gl){
     }
     state.mouse.s *= 0.985;
 
+    if(state.mouse.s > 0.5 && Math.abs(state.mouse.vx) > 0.05 && t - lastImp > 0.07){
+      var amp = Math.max(-1.1, Math.min(1.1, state.mouse.vx*2.2));
+      imps[impIdx*4] = state.mouse.x;
+      imps[impIdx*4+1] = state.mouse.y;
+      imps[impIdx*4+2] = t;
+      imps[impIdx*4+3] = amp;
+      impIdx = (impIdx + 1) % 12;
+      lastImp = t;
+    }
+
     gl.bindVertexArray(vao);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
@@ -659,7 +691,7 @@ if(gl){
     gl.uniform2f(u1.grid, state.cols, state.rows);
     gl.uniform1f(u1.t, t);
     gl.uniform3f(u1.mouse, state.mouse.x, state.mouse.y, state.mouse.s);
-    gl.uniform2f(u1.mvel, state.mouse.vx, state.mouse.vy);
+    gl.uniform4fv(u1.imps, imps);
     gl.uniform2f(u1.seed, seed[0], seed[1]);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, maskTex);
@@ -729,6 +761,11 @@ projBtn.addEventListener("click", function(){ openOverlay(projects); });
 notesBtn.addEventListener("click", function(){ openOverlay(notes); });
 document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeOverlays); });
 document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeOverlays(); });
+[projects, notes].forEach(function(ov){
+  ov.addEventListener("click", function(e){
+    if(e.target === ov || e.target.classList.contains("overlay-inner")) closeOverlays();
+  });
+});
 
 /* group headings */
 var heads = document.querySelectorAll(".group-head");

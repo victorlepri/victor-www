@@ -469,8 +469,8 @@ float cascade(vec2 c, float t){
   float clump = smoothstep(0.34, 0.72, fbm(c*0.045 + vec2(t*0.006, -t*0.009) + u_seed*0.7 + evo*0.30));
   float lf = leafLayer(c, t, vec2(0.125, 0.25), 1.8, 0.34, 0.0);
   float ln = leafLayer(c, t, vec2(0.045, 0.30), 2.6, 0.56, 31.7);
-  float fr = fern(c, t, 0.63, 53.1);
-  float gr = grass(c, t, 0.60, 88.3);
+  float fr = fern(c, t, 0.46, 53.1);
+  float gr = grass(c, t, 0.44, 88.3);
   return (bands*bands*1.72 + hatch*0.28 + lf*1.02 + ln*1.12 + fr*1.15 + gr*0.85) * clump;
 }
 float drops(vec2 c, float t){

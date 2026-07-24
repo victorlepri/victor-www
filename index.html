@@ -415,6 +415,47 @@ float leafLayer(vec2 c, float t, vec2 tile, float thin, float dens, float ofs){
   leaf *= 0.65 + 0.35*smoothstep(0.02, 0.10, abs(f.y + wob));
   return leaf * (0.5 + 0.5*fract(h*7.1));
 }
+/* abstract fern frond: a rachis with paired leaflets tapering toward the tip */
+float fern(vec2 c, float t, float dens, float ofs){
+  vec2 dir = normalize(vec2(1.0, 0.62));
+  vec2 uv = vec2(dot(c, dir)*0.075, dot(c, vec2(-dir.y, dir.x))*0.11);
+  uv += (fbm(c*0.035 + u_seed*0.5 + vec2(ofs, t*0.012)) - 0.5)*0.7;
+  vec2 id = floor(uv);
+  vec2 f = fract(uv) - 0.5;
+  float h = hash12(id + floor(u_seed*9.0) + vec2(ofs));
+  if(h < dens) return 0.0;
+  float wob = sin(t*(0.3 + h*0.6) + h*30.0)*0.07;
+  float along = f.y + 0.5;                 /* 0 base, 1 tip */
+  float x = f.x + wob*along;
+  float stem = smoothstep(0.055, 0.0, abs(x)) * smoothstep(0.5, 0.44, abs(f.y));
+  float reach = 0.36*(1.0 - along);        /* leaflets shrink toward tip */
+  float ph = along*7.0 + abs(x)*1.4;       /* chevron the leaflet rows upward */
+  float band = abs(fract(ph) - 0.5);
+  float pinna = smoothstep(0.15, 0.02, band) * smoothstep(reach, reach-0.06, abs(x)) * step(0.03, abs(x));
+  float frond = max(stem, pinna*0.9) * smoothstep(0.5, 0.36, abs(f.y));
+  return frond * (0.55 + 0.45*fract(h*5.7));
+}
+/* abstract grass shoots: thin curved blades rising and tapering to a point */
+float grass(vec2 c, float t, float dens, float ofs){
+  vec2 uv = vec2(c.x*0.16, c.y*0.048) + (fbm(c*0.03 + u_seed*0.8 + vec2(ofs, 0.0)) - 0.5)*0.5;
+  vec2 id = floor(uv);
+  vec2 f = vec2(fract(uv.x) - 0.5, fract(uv.y));   /* x centered, y 0 bottom to 1 top */
+  float h = hash12(id + floor(u_seed*5.0) + vec2(ofs));
+  if(h < dens) return 0.0;
+  float best = 0.0;
+  for(int b=0;b<3;b++){
+    float hb = fract(h*(3.1 + float(b)*2.3));
+    float baseX = (hb - 0.5)*0.66;
+    float lean = (hb - 0.5)*0.85 + sin(t*(0.5 + hb) + hb*20.0)*0.10;
+    float top = 0.55 + 0.4*fract(hb*7.0);
+    float yy = f.y;
+    float bx = baseX + lean*yy*yy;
+    float wide = mix(0.05, 0.007, clamp(yy/top, 0.0, 1.0));
+    float blade = smoothstep(wide, 0.0, abs(f.x - bx)) * step(yy, top) * step(0.0, yy);
+    best = max(best, blade);
+  }
+  return best * (0.5 + 0.5*fract(h*4.3));
+}
 float cascade(vec2 c, float t){
   vec2 dir = normalize(vec2(1.0, 0.62));
   float along = dot(c, dir);
@@ -426,9 +467,11 @@ float cascade(vec2 c, float t){
   vec2 q = vec2(dot(c, vec2(dir.x,-dir.y))*0.15, dot(c, vec2(dir.y,dir.x))*0.27) + vec2(t*0.08, t*0.016) + u_seed*0.5 + evo*0.25;
   float hatch = fbm(q);
   float clump = smoothstep(0.34, 0.72, fbm(c*0.045 + vec2(t*0.006, -t*0.009) + u_seed*0.7 + evo*0.30));
-  float lf = leafLayer(c, t, vec2(0.125, 0.25), 1.8, 0.32, 0.0);
-  float ln = leafLayer(c, t, vec2(0.045, 0.30), 2.6, 0.55, 31.7);
-  return (bands*bands*1.90 + hatch*0.32 + lf*1.15 + ln*1.25) * clump;
+  float lf = leafLayer(c, t, vec2(0.125, 0.25), 1.8, 0.34, 0.0);
+  float ln = leafLayer(c, t, vec2(0.045, 0.30), 2.6, 0.56, 31.7);
+  float fr = fern(c, t, 0.63, 53.1);
+  float gr = grass(c, t, 0.60, 88.3);
+  return (bands*bands*1.72 + hatch*0.28 + lf*1.02 + ln*1.12 + fr*1.15 + gr*0.85) * clump;
 }
 float drops(vec2 c, float t){
   float best = 0.0;
@@ -638,7 +681,7 @@ if(gl){
     var W = window.innerWidth, H = window.innerHeight;
     var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     var base = Math.min(W, H);
-    state.cellPx = Math.max(7, Math.round(base/64));
+    state.cellPx = Math.max(7, Math.round(base/72));
     state.cols = Math.ceil(W/state.cellPx);
     state.rows = Math.ceil(H/state.cellPx);
     canvas.width = Math.round(W*dpr);

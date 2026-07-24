@@ -685,7 +685,8 @@ if(gl){
     var W = window.innerWidth, H = window.innerHeight;
     var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     var base = Math.min(W, H);
-    state.cellPx = Math.max(7, Math.round(base/72));
+    var div = base < 820 ? 64 : 72;   /* phones and tablets keep the original cell size; only large screens get the finer grid */
+    state.cellPx = Math.max(7, Math.round(base/div));
     state.cols = Math.ceil(W/state.cellPx);
     state.rows = Math.ceil(H/state.cellPx);
     canvas.width = Math.round(W*dpr);

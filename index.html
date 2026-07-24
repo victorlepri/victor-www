@@ -466,10 +466,11 @@ void main(){
     vec4 imp = u_imps[i];
     float age = t - imp.z;
     if(imp.z <= 0.0 || age < 0.0 || age > 2.5) continue;
-    vec2 dv = cell - (imp.xy - vec2(0.0, age*3.5));
+    float fr = 2.6 + 1.2*fract(imp.z*7.13);
+    vec2 dv = cell - (imp.xy - vec2(0.0, age*2.6));
     float dmi = abs(dv.x) + abs(dv.y);
-    float k = exp(-dmi*dmi/80.0);
-    sway += imp.w * k * sin(age*6.0 - dmi*0.4) * exp(-age*1.6);
+    float k = exp(-dmi*dmi/80.0) * (0.7 + 0.5*vnoise(cell*0.35 + vec2(imp.z, imp.z*1.7)));
+    sway += imp.w * k * sin(age*fr - dmi*0.3) * exp(-age*1.9);
   }
   sway = clamp(sway, -1.4, 1.4);
   part += vec2(sway, sway*0.22);

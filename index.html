@@ -53,30 +53,19 @@
     outline:1px solid var(--pink);
     outline-offset:4px;
   }
-  #projectsBtn{
+  #nav{
     position:fixed;
     left:50%;
     bottom:4.5vh;
     transform:translateX(-50%);
     z-index:4;
+    display:flex;
+    align-items:center;
+    gap:46px;
     opacity:0;
     transition:opacity 1.2s ease;
   }
-  #projectsBtn.shown{opacity:1;}
-  #notesBtn{
-    position:fixed;
-    right:20px;
-    bottom:16px;
-    z-index:4;
-    color:var(--ink-dim);
-    letter-spacing:0.35em;
-    font-size:10px;
-    text-transform:uppercase;
-    opacity:0;
-    transition:opacity 1.2s ease 1.5s, color .3s;
-  }
-  #notesBtn.shown{opacity:.7;}
-  #notesBtn:hover{color:var(--ink);}
+  #nav.shown{opacity:1;}
   .overlay{
     position:fixed;
     inset:0;
@@ -228,8 +217,10 @@
 <h1 class="sr">Victor Lepri</h1>
 <canvas id="field" aria-hidden="true"></canvas>
 
-<button id="projectsBtn" aria-label="Open projects"></button>
-<button id="notesBtn" class="shown-later">about</button>
+<div id="nav">
+  <button id="projectsBtn" aria-label="Open projects"></button>
+  <button id="notesBtn" aria-label="Open about"></button>
+</div>
 
 <div class="overlay" id="projects" role="dialog" aria-label="Projects">
   <div class="overlay-inner">
@@ -266,9 +257,9 @@
     <div class="notes-body">
       <button class="close-x" data-close aria-label="Close">&times;</button>
       <h2>victor lepri</h2>
-      <p class="sub">New York City. Brazilian soul, artist by craft, technologist by heart; for me art and technology were never separate.</p>
+      <p class="sub">New York City. Brazilian soul, artist by craft, technologist by heart; art and technology were never separate.</p>
       <h4>Now</h4>
-      <p>IT Director at Cosmos Labs, the core team driving the Cosmos blockchain ecosystem. My work centers on what really matters at this scale: compliance and security. I design and run the controls, policies, and infrastructure that keep a global blockchain organization secure, auditable, and compliant while it moves fast. <a href="https://cosmos.network" target="_blank" rel="noopener">cosmos.network</a></p>
+      <p>IT Director at Cosmos Labs, the core team driving the Cosmos blockchain ecosystem. My work centers on what really matters at this scale: reliability, security, and sustainability. I design and run the controls, policies, and infrastructure that keep a global Web3 organization moving fast and flexible. <a href="https://cosmos.network" target="_blank" rel="noopener">cosmos.network</a></p>
       <h4>Experience</h4>
       <p>I led IT operations at ThinkWell, running a global technical team across 13 countries: cloud, cybersecurity, automation, and change management. I managed product at ChangeDAO, building Web3 platforms for giving and access. In Brazil I founded Caracal, supporting artists and artistic organizations in running their grants and business, artistically and technologically.</p>
       <h4>Sound</h4>
@@ -710,26 +701,29 @@ var projBtn = document.getElementById("projectsBtn");
 var projCv = document.createElement("canvas");
 projBtn.appendChild(projCv);
 var notesBtn = document.getElementById("notesBtn");
+var aboutCv = document.createElement("canvas");
+notesBtn.appendChild(aboutCv);
+var navEl = document.getElementById("nav");
 var projects = document.getElementById("projects");
 var notes = document.getElementById("notes");
-var hoverProj = false;
+var hoverProj = false, hoverAbout = false;
 
-setTimeout(function(){ projBtn.classList.add("shown"); notesBtn.classList.add("shown"); }, 2600);
+setTimeout(function(){ navEl.classList.add("shown"); }, 2600);
 projBtn.addEventListener("mouseenter", function(){ hoverProj = true; });
 projBtn.addEventListener("mouseleave", function(){ hoverProj = false; });
+notesBtn.addEventListener("mouseenter", function(){ hoverAbout = true; });
+notesBtn.addEventListener("mouseleave", function(){ hoverAbout = false; });
 
 function openOverlay(el){
   el.classList.add("open");
   state.dimTarget = 0.26;
-  projBtn.style.display = "none";
-  notesBtn.style.display = "none";
+  navEl.style.display = "none";
 }
 function closeOverlays(){
   projects.classList.remove("open");
   notes.classList.remove("open");
   state.dimTarget = 1;
-  projBtn.style.display = "";
-  notesBtn.style.display = "";
+  navEl.style.display = "";
 }
 projBtn.addEventListener("click", function(){ openOverlay(projects); });
 notesBtn.addEventListener("click", function(){ openOverlay(notes); });
@@ -851,6 +845,7 @@ function uiFrame(){
   if(document.hidden) return;
   var t = reduced ? 0 : (performance.now() - uiT0)/1000;
   drawWord(projCv, "PROJECTS", 3, t, hoverProj);
+  drawWord(aboutCv, "ABOUT", 3, t, hoverAbout);
   if(projects.classList.contains("open")){
     heads.forEach(function(h){ drawWord(h, h.dataset.word, +h.dataset.scale, t*0.7, false); });
     drawCosmos(thCos.getContext("2d"), t);

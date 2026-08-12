@@ -212,7 +212,7 @@
     text-transform:uppercase;
   }
   .back:hover{color:var(--ink);}
-  /* about; a lit panel floating over frozen time */
+  /* about; a lit panel floating over the rain */
   #notes .overlay-inner{justify-content:flex-start;gap:0;}
   .notes-body{
     width:min(660px,100%);
@@ -1197,7 +1197,6 @@ var lastTrigger = null;
 function openOverlay(el, h, trigger){
   el.classList.add("open");
   state.dimTarget = 0.26;
-  state.bgScaleTarget = 0.06;
   navEl.style.display = "none";
   if(h) setHash(h);
   lastTrigger = trigger || null;
@@ -1208,7 +1207,6 @@ function closeOverlays(){
   projects.classList.remove("open");
   notes.classList.remove("open");
   state.dimTarget = 1;
-  state.bgScaleTarget = 1;
   navEl.style.display = "";
   setHash("");
   if(lastTrigger){ lastTrigger.focus(); lastTrigger = null; }

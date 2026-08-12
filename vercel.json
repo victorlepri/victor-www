@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/new",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/new/:path*",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}

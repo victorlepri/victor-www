@@ -359,7 +359,7 @@
       <div class="sect">
         <h3 class="sr">Sound</h3>
         <canvas class="sect-head" data-word="SOUND" data-scale="2" aria-hidden="true"></canvas>
-        <p class="prose">I am a jazz pianist. Master of Jazz Piano Performance from Rutgers; B.A. in Piano Performance and Music Education from the State University of Londrina. I think in improvisation, rhythm, structure, and tension and release; expanding these concepts into a holistic vision of technology. The rain on this page improvises: every visit opens a new key and a new set of changes, somewhere between bebop and the modern language. Turn the sound on and stay a while.</p>
+        <p class="prose">I am a jazz pianist. Master of Jazz Piano Performance from Rutgers; B.A. in Piano Performance and Music Education from the State University of Londrina. I think in improvisation, rhythm, structure, and tension and release; expanding these concepts into a holistic vision of technology. The rain on this page plays Coltrane: the drops sound the head of Giant Steps note by note as they land. Turn the sound on and stay a while.</p>
       </div>
       <div class="sect">
         <h3 class="sr">Origin</h3>
@@ -439,8 +439,8 @@ function drawWord(cv, word, scale, t, hot){
           var n = Math.sin((i*5+c)*3.7 + r*1.9 + t*2.2)*0.5+0.5;
           var b = 0.55 + 0.45*n;
           if(hot) b = Math.min(1, b+0.35);
-          var col = b > 0.82 ? "255,180,220" : "255,62,160";
-          g.fillStyle = "rgba(" + col + "," + (0.35+0.65*b).toFixed(2) + ")";
+          var col = b > 0.78 ? "255,224,240" : "255,124,196";
+          g.fillStyle = "rgba(" + col + "," + (0.55+0.45*b).toFixed(2) + ")";
           g.fillRect((x0+c)*scale, (pad+r)*scale, scale-1, scale-1);
         }
       }
@@ -475,8 +475,8 @@ function drawIcon(cv, scale, t, hot, waves){
       var n = Math.sin(c*3.7 + r*1.9 + t*2.2)*0.5+0.5;
       var b = 0.55 + 0.45*n;
       if(hot) b = Math.min(1, b+0.35);
-      var col = b > 0.82 ? "255,180,220" : "255,62,160";
-      g.fillStyle = "rgba(" + col + "," + (0.35+0.65*b).toFixed(2) + ")";
+      var col = b > 0.78 ? "255,224,240" : "255,124,196";
+      g.fillStyle = "rgba(" + col + "," + (0.55+0.45*b).toFixed(2) + ")";
       g.fillRect((pad+c)*scale, (pad+r)*scale, scale-1, scale-1);
     }
   }
@@ -777,117 +777,23 @@ var state = {cols:0, rows:0, cellPx:14, dim:1, dimTarget:1, bgScale:1, bgScaleTa
   hand:{dx:0.85,dy:0.53,spread:0.3,press:0}};
 var pressed = false;
 
-/* the improviser: a random walk that speaks the jazz language. every visit
-   deals a new key, a new form, a new temperament; the grammar is fixed,
-   the choices are never the same twice */
-var Jazz = (function(){
-  var KEY = Math.floor(Math.random()*12);
-  var SCALES = {
-    maj7:[0,2,4,5,7,9,11],
-    dom:[0,2,4,5,7,9,10,11],
-    m7:[0,2,3,5,7,9,10],
-    alt:[0,1,3,4,6,8,10],
-    m7b5:[0,2,3,5,6,8,10]
-  };
-  var TONES = {maj7:[0,4,7,11], dom:[0,4,7,10], m7:[0,3,7,10], alt:[0,4,10], m7b5:[0,3,6,10]};
-  var FORMS = [
-    /* a bebop blues, parker weather */
-    {secs:[2.0,3.0], prog:[[0,"dom"],[5,"dom"],[0,"dom"],[7,"m7"],[5,"dom"],[5,"dom"],[0,"dom"],[9,"alt"],[2,"m7"],[7,"dom"],[0,"dom"],[7,"alt"]]},
-    /* rhythm changes, hard bop weather */
-    {secs:[1.7,2.6], prog:[[0,"maj7"],[9,"alt"],[2,"m7"],[7,"dom"],[0,"maj7"],[9,"dom"],[2,"m7"],[7,"dom"],[4,"dom"],[9,"dom"],[2,"dom"],[7,"dom"]]},
-    /* two dorian worlds, patient, miles weather */
-    {secs:[7.0,12.0], prog:[[0,"m7"],[0,"m7"],[0,"m7"],[1,"m7"]]},
-    /* the cycle in major thirds, trane weather */
-    {secs:[2.2,3.4], prog:[[0,"maj7"],[3,"dom"],[8,"maj7"],[11,"dom"],[4,"maj7"],[7,"dom"]]}
-  ];
-  var form = FORMS[Math.floor(Math.random()*FORMS.length)];
-  var chordSecs = form.secs[0] + Math.random()*(form.secs[1] - form.secs[0]);
-  var pChroma = 0.14 + Math.random()*0.14;
-  var pLeap = 0.10 + Math.random()*0.14;
-  var pHold = 0.55 + Math.random()*0.25;
-  var prev = 0, dir = 1, resolveTo = 0, lastChord = -1, prevBass = 0;
-
-  function chordAt(t){
-    var i = Math.floor(Math.max(t, 0)/chordSecs) % form.prog.length;
-    return {i:i, root:(KEY + form.prog[i][0])%12, q:form.prog[i][1]};
+/* the head of giant steps. the drops sound it in order,
+   first note to last, then around again */
+var Tune = (function(){
+  var song = {name:"GIANT STEPS", root:11, dur:1.4, lpf:2800, soft:1.0,
+    notes:[66,62,59,55,58,59,57,62,58,55,51,54,55,53,58,59,57,62,63,63,66,67,67,70,66,66]};
+  var at = 0;
+  function next(){
+    var m = song.notes[at];
+    at = (at + 1) % song.notes.length;
+    return m;
   }
-  function abs12(root, ivs){
-    var out = [];
-    for(var i=0;i<ivs.length;i++) out.push((root + ivs[i])%12);
-    return out;
-  }
-  function near(pcs, center, span){
-    var out = [];
-    for(var m=Math.round(center)-span; m<=Math.round(center)+span; m++){
-      if(pcs.indexOf(((m%12)+12)%12) >= 0) out.push(m);
-    }
-    return out;
-  }
-  function next(x, t){
-    var ch = chordAt(t);
-    var scale = abs12(ch.root, SCALES[ch.q]);
-    var tones = abs12(ch.root, TONES[ch.q]);
-    var center = 48 + x*28;
-    if(!prev) prev = Math.round(center);
-    /* a chromatic approach owes its resolution; pay it first */
-    if(resolveTo){ var owed = resolveTo; resolveTo = 0; dir = owed >= prev ? 1 : -1; prev = owed; return owed; }
-    var fresh = ch.i !== lastChord;
-    lastChord = ch.i;
-    var pool;
-    if(fresh){
-      /* land the change on a chord tone near the line */
-      pool = near(tones, prev, 9);
-    } else if(Math.random() < pLeap){
-      pool = near(tones, prev, 12);
-    } else {
-      /* mostly steps; the line keeps or bends its direction */
-      if(Math.random() > pHold) dir = -dir;
-      pool = [];
-      for(var m=prev+dir; Math.abs(m - prev) <= 3; m += dir){
-        if(scale.indexOf(((m%12)+12)%12) >= 0){ pool = [m]; break; }
-      }
-      if(!pool.length) pool = near(scale, prev, 4);
-    }
-    pool = pool.filter(function(m){ return m > 40 && m < 84; });
-    if(!pool.length) pool = near(scale, center, 7);
-    var pick = pool[Math.floor(Math.random()*pool.length)];
-    if(Math.abs(pick - center) > 14){
-      /* the square that rang pulls the line toward its register */
-      var best = pool[0], bd = 1e9;
-      for(var i=0;i<pool.length;i++){
-        var d = Math.abs(pool[i] - center);
-        if(d < bd){ bd = d; best = pool[i]; }
-      }
-      pick = best;
-    }
-    if(!fresh && Math.random() < pChroma){
-      resolveTo = pick;
-      pick = pick + (Math.random() < 0.5 ? 1 : -1);
-    }
-    dir = pick >= prev ? 1 : -1;
-    prev = pick;
-    return pick;
-  }
-  function bass(t){
-    var ch = chordAt(t);
-    var tones = TONES[ch.q];
-    var pc = (ch.root + (Math.random() < 0.55 ? 0 : tones[1 + Math.floor(Math.random()*(tones.length - 1))]))%12;
-    var base = prevBass || 30;
-    var best = 30, bd = 1e9;
-    for(var m=24; m<=38; m++){
-      if(((m%12)+12)%12 !== pc) continue;
-      var d = Math.abs(m - base) + Math.random()*2;
-      if(d < bd){ bd = d; best = m; }
-    }
-    prevBass = best;
-    return best;
-  }
-  return {next:next, bass:bass, key:KEY};
+  return {next:next, song:song};
 })();
 
 /* the sound of the rain; nothing plays until the visitor asks */
 var Sound = (function(){
-  var ctx = null, master = null, on = false, voices = 0, lastNote = 0, lastBass = 0;
+  var ctx = null, master = null, on = false, voices = 0, lastNote = 0;
   function midiHz(m){ return 440*Math.pow(2, (m - 69)/12); }
   function ensure(){
     if(ctx) return;
@@ -900,10 +806,10 @@ var Sound = (function(){
     master.connect(comp);
     comp.connect(ctx.destination);
     /* the bed: a low hum on the key of the day and a faint electric hiss */
-    var o1 = ctx.createOscillator(); o1.type = "sine"; o1.frequency.value = midiHz(24 + Jazz.key);
+    var o1 = ctx.createOscillator(); o1.type = "sine"; o1.frequency.value = midiHz(24 + Tune.song.root);
     var g1 = ctx.createGain(); g1.gain.value = 0.016;
     o1.connect(g1); g1.connect(master); o1.start();
-    var o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = midiHz(31 + Jazz.key);
+    var o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = midiHz(31 + Tune.song.root);
     var g2 = ctx.createGain(); g2.gain.value = 0.009;
     o2.connect(g2); g2.connect(master); o2.start();
     var len = 2*ctx.sampleRate;
@@ -915,21 +821,21 @@ var Sound = (function(){
     var g3 = ctx.createGain(); g3.gain.value = 0.05;
     src.connect(bp); bp.connect(g3); g3.connect(master); src.start();
   }
-  function note(col, cols, vel, bass, t){
+  function note(col, cols, vel){
     if(!on || !ctx) return;
     var now = ctx.currentTime;
-    if(bass){ if(now - lastBass < 0.5 || voices > 7) return; lastBass = now; }
-    else { if(now - lastNote < 0.075 || voices > 7) return; lastNote = now; }
+    if(now - lastNote < 0.075 || voices > 7) return;
+    lastNote = now;
     var x = col/Math.max(cols,1);
-    var f = midiHz(bass ? Jazz.bass(t) : Jazz.next(x, t));
-    if(!bass) vel *= 0.78 + 0.44*Math.random();
-    var dur = bass ? 3.2 : 1.7;
+    var f = midiHz(Tune.next());
+    vel *= 0.78 + 0.44*Math.random();
+    var dur = Tune.song.dur;
     var g = ctx.createGain();
     g.gain.setValueAtTime(0, now);
-    g.gain.linearRampToValueAtTime(0.22*vel*(bass?0.85:1.0), now + 0.006);
+    g.gain.linearRampToValueAtTime(0.22*vel*Tune.song.soft, now + 0.006);
     g.gain.exponentialRampToValueAtTime(0.0004, now + dur);
     var lpf = ctx.createBiquadFilter(); lpf.type = "lowpass";
-    lpf.frequency.value = bass ? 900 : 2600; lpf.Q.value = 0.2;
+    lpf.frequency.value = Tune.song.lpf; lpf.Q.value = 0.2;
     var mixg = ctx.createGain(); mixg.gain.value = 1.0;
     var o1 = ctx.createOscillator(); o1.type = "sine"; o1.frequency.value = f;
     var og1 = ctx.createGain(); og1.gain.value = 1.0; o1.connect(og1); og1.connect(mixg);
@@ -1013,9 +919,9 @@ function rainTick(t, rows, cols){
     if(tt <= 0) continue;
     var p = (tt*rc.sp) % rc.cyc;
     var landP = rows - 1 + rc.len;
-    if(rc.prevP >= 0 && rc.prevP < landP && p >= landP){
-      var vel = rc.L === 2 ? 0.9 : 0.45 + ((rc.sp - 5)/10)*0.4;
-      Sound.note(rc.x, cols, vel, rc.L === 2, t);
+    if(rc.prevP >= 0 && rc.prevP < landP && p >= landP && rc.L !== 2){
+      var vel = 0.45 + ((rc.sp - 5)/10)*0.4;
+      Sound.note(rc.x, cols, vel);
     }
     rc.prevP = p;
   }

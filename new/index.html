@@ -289,7 +289,7 @@
   <button id="soundBtn" aria-label="Toggle sound" aria-pressed="false"></button>
 </div>
 
-<div class="overlay" id="projects" role="dialog" aria-label="Projects">
+<div class="overlay" id="projects" role="dialog" aria-modal="true" aria-label="Projects">
   <div class="overlay-inner">
     <div class="pwrap panel">
       <button class="close-x" data-close aria-label="Close">&times;</button>
@@ -324,29 +324,34 @@
   </div>
 </div>
 
-<div class="overlay" id="notes" role="dialog" aria-label="About">
+<div class="overlay" id="notes" role="dialog" aria-modal="true" aria-label="About">
   <div class="overlay-inner">
     <div class="notes-body panel">
       <button class="close-x" data-close aria-label="Close">&times;</button>
       <h2>victor lepri</h2>
       <p class="sub">New York City. Brazilian soul, artist by craft, technologist by heart; art and technology were never separate.</p>
       <div class="sect">
+        <h3 class="sr">Now</h3>
         <canvas class="sect-head" data-word="NOW" data-scale="2" aria-hidden="true"></canvas>
         <p class="prose">IT Director at Cosmos Labs, the core team driving the Cosmos blockchain ecosystem. My work centers on what really matters at this scale: reliability, security, and sustainability. I design and run the controls, policies, and infrastructure that keep a global Web3 organization moving fast and flexible. <a href="https://cosmos.network" target="_blank" rel="noopener">cosmos.network</a></p>
       </div>
       <div class="sect">
+        <h3 class="sr">Experience</h3>
         <canvas class="sect-head" data-word="EXPERIENCE" data-scale="2" aria-hidden="true"></canvas>
         <p class="prose">I led IT operations at ThinkWell, running a global technical team across 13 countries: cloud, cybersecurity, automation, and change management. I managed product at ChangeDAO, building Web3 platforms for giving and access. In Brazil I founded Caracal, supporting artists and artistic organizations in running their grants and business, artistically and technologically.</p>
       </div>
       <div class="sect">
+        <h3 class="sr">Sound</h3>
         <canvas class="sect-head" data-word="SOUND" data-scale="2" aria-hidden="true"></canvas>
         <p class="prose">I am a jazz pianist. Master of Jazz Piano Performance from Rutgers; B.A. in Piano Performance and Music Education from the State University of Londrina. I think in improvisation, rhythm, structure, and tension and release; expanding these concepts into a holistic vision of technology. The rain on this page plays in E minor; turn the sound on and stay a while.</p>
       </div>
       <div class="sect">
+        <h3 class="sr">Origin</h3>
         <canvas class="sect-head" data-word="ORIGIN" data-scale="2" aria-hidden="true"></canvas>
         <p class="prose">First generation immigrant from Brazil. My love for technology and operations started in my teens, building and hosting game servers so players across South America could reach the games they loved with low latency. From there I dedicated my life to accessible, innovative IT operations that bridge the gap between vision, innovation, and action.</p>
       </div>
       <div class="sect">
+        <h3 class="sr">Goal</h3>
         <canvas class="sect-head" data-word="GOAL" data-scale="2" aria-hidden="true"></canvas>
         <p class="prose">I challenge traditional systems thinking, put the human on the other end first, and bridge worlds: art and technology, business and people, cultures and languages. I create technology to expand the possibilities of connection.</p>
       </div>
@@ -640,6 +645,9 @@ void main(){
   vec3 col = warm(lv);
   col *= 0.75 + 0.25*hash12(cell*1.13 + floor(t*1.5));
 
+  /* the hand lifts only the foliage it touches; never the rain, never the type */
+  col *= 1.0 + min(ig, 1.1)*0.22;
+
   /* the rain never reacts to the hand */
   float b = drops(cell, t);
   if(b > 0.02){
@@ -674,7 +682,6 @@ void main(){
     col = mix(col, icol*0.72, g2*0.92);
   }
 
-  col *= 1.0 + min(ig, 1.1)*0.22;
   o = vec4(col, 1.0);
 }`;
 
@@ -737,7 +744,22 @@ var pressed = false;
 /* identity words rendered under the name, on the same grid */
 var ID_WORDS = ["JAZZ PIANIST","TECHNOLOGIST","BRAZILIAN SOUL","NEW YORK CITY"];
 var ID_START = 9.0, ID_PERIOD = 7.0;
-var idIdx = -1, idFit = false;
+var idIdx = -1, idFit = false, usableIds = [];
+
+/* a word fits as one line, or splits at a space into two balanced lines */
+function fitLines(word, cols){
+  if(wordWidth(word) <= cols*0.9) return [word];
+  var parts = word.split(" ");
+  var best = null, bd = 1e9;
+  for(var i=1;i<parts.length;i++){
+    var a = parts.slice(0, i).join(" "), b = parts.slice(i).join(" ");
+    if(wordWidth(a) <= cols*0.9 && wordWidth(b) <= cols*0.9){
+      var d = Math.abs(wordWidth(a) - wordWidth(b));
+      if(d < bd){ bd = d; best = [a, b]; }
+    }
+  }
+  return best;
+}
 
 /* the sound of the rain; nothing plays until the visitor asks */
 var Sound = (function(){
@@ -813,13 +835,24 @@ var Sound = (function(){
     ensure();
     if(!ctx) return false;
     on = !on;
-    if(ctx.state === "suspended") ctx.resume();
-    master.gain.setTargetAtTime(on ? 0.16 : 0.0, ctx.currentTime, 0.35);
+    if(on){
+      if(ctx.state === "suspended") ctx.resume();
+      master.gain.setTargetAtTime(0.16, ctx.currentTime, 0.35);
+    } else {
+      master.gain.setTargetAtTime(0.0, ctx.currentTime, 0.35);
+      /* let the fade finish, then rest the whole engine */
+      setTimeout(function(){ if(!on && ctx && ctx.state === "running") ctx.suspend(); }, 1200);
+    }
     return on;
   }
   function duck(hidden){
     if(!ctx || !on) return;
-    master.gain.setTargetAtTime(hidden ? 0.0 : 0.16, ctx.currentTime, 0.2);
+    if(hidden){
+      master.gain.setTargetAtTime(0.0, ctx.currentTime, 0.2);
+    } else {
+      if(ctx.state === "suspended") ctx.resume();
+      master.gain.setTargetAtTime(0.16, ctx.currentTime, 0.2);
+    }
   }
   return {note:note, toggle:toggle, duck:duck, isOn:function(){ return on; }};
 })();
@@ -844,11 +877,11 @@ function rebuildRain(seedX, rows, cols){
     for(var x=0; x<cols; x++){
       var h = hash12cpu(x + Math.floor(seedX*3.0), L*17.31);
       if(h < (L===2 ? 0.92 : 0.84)) continue;
-      var hf = function(m){ return frac32(fr32(h*m)); };
-      var sp = (L===2) ? mixn(0.7,1.6,hf(5.1)) : mixn(5.0,15.0,hf(7.7));
-      var len = mixn(7.0, 22.0, hf(13.1));
-      var cyc = rows + len + mixn(24.0, 120.0, hf(3.3));
-      var startT = Math.pow(hf(57.0), 0.75)*13.0;
+      var hf = function(m){ return frac32(fr32(h*fr32(m))); };
+      var sp = fr32((L===2) ? mixn(0.7,1.6,hf(5.1)) : mixn(5.0,15.0,hf(7.7)));
+      var len = fr32(mixn(7.0, 22.0, hf(13.1)));
+      var cyc = fr32(rows + len + fr32(mixn(24.0, 120.0, hf(3.3))));
+      var startT = fr32(Math.pow(hf(57.0), 0.75)*13.0);
       rainCols.push({x:x, L:L, sp:sp, len:len, cyc:cyc, st:startT, prevP:-1});
     }
   }
@@ -928,8 +961,14 @@ if(gl){
       nameBottom = midY + 5*s2 + Math.ceil(3.5*s2);
     }
     var fits = false;
-    if(idWord && wordWidth(idWord) <= cols*0.9){
-      stamp(idWord, cols/2, nameBottom + 7, 1, 2);
+    var lines = idWord ? fitLines(idWord, cols) : null;
+    if(lines){
+      if(lines.length === 1){
+        stamp(lines[0], cols/2, nameBottom + 7, 1, 2);
+      } else {
+        stamp(lines[0], cols/2, nameBottom + 6, 1, 2);
+        stamp(lines[1], cols/2, nameBottom + 15, 1, 2);
+      }
       fits = true;
     }
     /* dilate the name into green, the identity line into alpha */
@@ -978,7 +1017,9 @@ if(gl){
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fieldTex, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    idFit = buildMask(idIdx >= 0 ? ID_WORDS[idIdx] : null);
+    usableIds = ID_WORDS.filter(function(w){ return fitLines(w, state.cols); });
+    idIdx = -1;
+    idFit = buildMask(null);
     rebuildRain(seed[0], state.rows, state.cols);
   }
   window.addEventListener("resize", resize);
@@ -1044,9 +1085,9 @@ if(gl){
     }
     /* the identity line swaps words on its own slow clock */
     var wordPhase = 0, wordOn = 0;
-    if(t > ID_START){
-      var k = reduced ? 0 : Math.floor((t - ID_START)/ID_PERIOD) % ID_WORDS.length;
-      if(k !== idIdx){ idIdx = k; idFit = buildMask(ID_WORDS[k]); }
+    if(t > ID_START && usableIds.length){
+      var k = reduced ? 0 : Math.floor((t - ID_START)/ID_PERIOD) % usableIds.length;
+      if(k !== idIdx){ idIdx = k; idFit = buildMask(usableIds[k]); }
       wordPhase = reduced ? 0.5 : ((t - ID_START)/ID_PERIOD) % 1;
       wordOn = idFit ? 1 : 0;
     }
@@ -1136,12 +1177,16 @@ soundBtn.addEventListener("click", function(){
 function setHash(h){
   if(history.replaceState) history.replaceState(null, "", h ? "#" + h : location.pathname + location.search);
 }
-function openOverlay(el, h){
+var lastTrigger = null;
+function openOverlay(el, h, trigger){
   el.classList.add("open");
   state.dimTarget = 0.26;
   state.bgScaleTarget = 0.06;
   navEl.style.display = "none";
   if(h) setHash(h);
+  lastTrigger = trigger || null;
+  var cx = el.querySelector(".close-x");
+  if(cx) cx.focus();
 }
 function closeOverlays(){
   projects.classList.remove("open");
@@ -1150,9 +1195,10 @@ function closeOverlays(){
   state.bgScaleTarget = 1;
   navEl.style.display = "";
   setHash("");
+  if(lastTrigger){ lastTrigger.focus(); lastTrigger = null; }
 }
-projBtn.addEventListener("click", function(){ openOverlay(projects, "projects"); });
-notesBtn.addEventListener("click", function(){ openOverlay(notes, "about"); });
+projBtn.addEventListener("click", function(){ openOverlay(projects, "projects", projBtn); });
+notesBtn.addEventListener("click", function(){ openOverlay(notes, "about", notesBtn); });
 document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeOverlays); });
 document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeOverlays(); });
 [projects, notes].forEach(function(ov){

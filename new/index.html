@@ -1,0 +1,1322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Victor Lepri</title>
+<meta name="description" content="Victor Lepri. New York City. Brazilian soul, artist by craft, technologist by heart. An auto generative LED jungle where art and technology meet.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Victor Lepri">
+<meta property="og:description" content="An auto generative LED jungle where art and technology meet.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='black'/%3E%3Crect x='2' y='3' width='1' height='1' fill='%23e11a5f'/%3E%3Crect x='3' y='2' width='1' height='1' fill='%23ff3ea0'/%3E%3Crect x='5' y='4' width='1' height='1' fill='%232a48ff'/%3E%3Crect x='4' y='5' width='1' height='1' fill='%23e11a5f'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --black:#000000;
+    --magenta:#e11a5f;
+    --pink:#ff3ea0;
+    --blue:#2a48ff;
+    --indigo:#6a2aff;
+    --steel:#8b909a;
+    --steel-dim:#4a4e56;
+    --ink:#d8d3da;
+    --ink-dim:#8f8a96;
+  }
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--black);
+    color:var(--ink);
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:13px;
+    line-height:1.65;
+    overflow:hidden;
+  }
+  #field{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    image-rendering:pixelated;
+  }
+  .sr{
+    position:absolute;
+    width:1px;height:1px;
+    overflow:hidden;
+    clip-path:inset(50%);
+  }
+  button{
+    font:inherit;
+    color:inherit;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+  }
+  button:focus-visible, a:focus-visible{
+    outline:1px solid var(--pink);
+    outline-offset:4px;
+  }
+  #nav{
+    position:fixed;
+    left:50%;
+    bottom:4.5vh;
+    transform:translateX(-50%);
+    z-index:4;
+    display:flex;
+    align-items:center;
+    gap:40px;
+    opacity:0;
+    transition:opacity 1.2s ease;
+  }
+  #nav.shown{opacity:1;}
+  .overlay{
+    position:fixed;
+    inset:0;
+    z-index:6;
+    display:none;
+    overflow-y:auto;
+    background:rgba(0,0,0,.42);
+  }
+  .overlay.open{display:block;}
+  .overlay-inner{
+    min-height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:9vh 24px 12vh;
+    box-sizing:border-box;
+    gap:5vh;
+  }
+  .panel{position:relative;}
+  .overlay.open .panel{
+    animation:panelIn .5s steps(14,end) both, panelFlick .7s linear both;
+  }
+  @keyframes panelIn{
+    from{clip-path:inset(0 0 100% 0);}
+    to{clip-path:inset(0 0 -8% 0);}
+  }
+  @keyframes panelFlick{
+    0%,6%,10%{opacity:.25;}
+    3%,8%,100%{opacity:1;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .overlay.open .panel{animation:none;}
+  }
+  /* projects; the marks come first, like pieces on a gallery wall */
+  #projects .overlay-inner{gap:6vh;}
+  .pwrap{width:min(720px,100%);position:relative;}
+  .pwrap > .close-x{position:absolute;top:-6px;right:0;font-size:18px;}
+  .pgrid{
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    gap:64px;
+    flex-wrap:wrap;
+  }
+  .pitem{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+    opacity:.78;
+    transition:opacity .35s ease, transform .35s ease;
+  }
+  .pitem:hover{opacity:1;}
+  .pitem.sel{opacity:1;transform:translateY(-4px);}
+  .pmark{
+    width:132px;
+    height:132px;
+    image-rendering:pixelated;
+    border:1px solid var(--steel-dim);
+    background:#000;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.9), 0 0 28px rgba(0,0,0,.65);
+    transition:border-color .35s ease;
+  }
+  .pitem.sel .pmark{border-color:var(--steel);}
+  .plabel{
+    color:var(--ink-dim);
+    font-size:9px;
+    letter-spacing:.42em;
+    text-transform:uppercase;
+  }
+  .pdetails{width:min(600px,100%);margin:0 auto;}
+  .pcard{
+    display:none;
+    border:1px solid var(--steel-dim);
+    background:rgba(3,2,6,.78);
+    padding:22px 26px;
+    box-sizing:border-box;
+    position:relative;
+    overflow:hidden;
+  }
+  .pcard.show{display:block;animation:cardIn .35s ease both;}
+  @keyframes cardIn{
+    from{opacity:0;transform:translateY(8px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .pcard::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,.028) 0 1px, transparent 1px 3px);
+  }
+  .pcard .tag{
+    color:var(--pink);
+    font-style:normal;
+    display:block;
+    margin-bottom:8px;
+    letter-spacing:.06em;
+  }
+  .pcard p{margin:0 0 10px;color:var(--ink-dim);max-width:56ch;}
+  .pcard a{
+    color:var(--ink);
+    text-decoration:none;
+    border-bottom:1px solid var(--steel-dim);
+    padding-bottom:1px;
+    letter-spacing:.08em;
+  }
+  .pcard a:hover{color:var(--pink);border-color:var(--pink);}
+  .back{
+    color:var(--ink-dim);
+    letter-spacing:.35em;
+    font-size:10px;
+    text-transform:uppercase;
+  }
+  .back:hover{color:var(--ink);}
+  /* about; a lit panel floating over frozen time */
+  #notes .overlay-inner{justify-content:flex-start;gap:0;}
+  .notes-body{
+    width:min(660px,100%);
+    background:rgba(3,2,6,.80);
+    border:1px solid var(--steel-dim);
+    padding:38px 44px 32px;
+    box-sizing:border-box;
+    position:relative;
+    overflow:hidden;
+  }
+  .notes-body::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,.028) 0 1px, transparent 1px 3px);
+  }
+  .close-x{
+    position:absolute;
+    top:14px;
+    right:16px;
+    color:var(--ink-dim);
+    font-size:16px;
+    line-height:1;
+    transition:transform .35s ease, color .3s;
+    z-index:1;
+  }
+  .close-x:hover{
+    color:var(--pink);
+    transform:rotate(22deg);
+  }
+  .notes-body h2{
+    font-size:12px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:#fff;
+    margin:0 0 6px;
+  }
+  .notes-body .sub{color:var(--ink-dim);margin:0 0 30px;}
+  .sect{margin:26px 0 0;}
+  .sect:first-of-type{margin-top:0;}
+  .sect-head{display:block;margin:0 0 8px;}
+  .notes-body .prose{
+    margin:0;
+    color:#cfc9d4;
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:15px;
+    line-height:1.78;
+  }
+  .notes-body .prose a{
+    color:#cfc9d4;
+    text-decoration:none;
+    border-bottom:1px solid var(--steel-dim);
+    padding-bottom:1px;
+  }
+  .notes-body .prose a:hover{color:var(--pink);border-color:var(--pink);}
+  .socials{
+    display:flex;
+    flex-wrap:wrap;
+    gap:22px;
+    margin-top:32px;
+    padding-top:24px;
+    border-top:1px solid var(--steel-dim);
+  }
+  .socials a{
+    color:var(--ink);
+    text-decoration:none;
+    border-bottom:1px solid var(--steel-dim);
+    padding-bottom:1px;
+    letter-spacing:.14em;
+    font-size:11px;
+    text-transform:uppercase;
+  }
+  .socials a:hover{color:var(--pink);border-color:var(--pink);}
+  .notes-body .back{display:inline-block;margin-top:30px;}
+  #fallback{
+    display:none;
+    position:fixed;
+    inset:0;
+    place-items:center;
+    text-align:center;
+    padding:24px;
+  }
+  @media (max-width:640px){
+    .overlay-inner{gap:4vh;}
+    .pgrid{gap:36px;}
+    .pmark{width:104px;height:104px;}
+    .notes-body{padding:30px 26px 26px;}
+  }
+</style>
+
+<h1 class="sr">Victor Lepri</h1>
+<canvas id="field" aria-hidden="true"></canvas>
+
+<div id="nav">
+  <button id="projectsBtn" aria-label="Open projects"></button>
+  <button id="notesBtn" aria-label="Open about"></button>
+  <button id="soundBtn" aria-label="Toggle sound" aria-pressed="false"></button>
+</div>
+
+<div class="overlay" id="projects" role="dialog" aria-label="Projects">
+  <div class="overlay-inner">
+    <div class="pwrap panel">
+      <button class="close-x" data-close aria-label="Close">&times;</button>
+      <div class="pgrid">
+        <button class="pitem" data-p="0" aria-expanded="false">
+          <canvas class="pmark" id="thumbCosmos" width="24" height="24" aria-hidden="true"></canvas>
+          <canvas class="pcap" data-word="C&#920;SMOS LABS" aria-hidden="true"></canvas>
+          <span class="plabel">IT MANAGEMENT</span>
+          <span class="sr">Cosmos Labs</span>
+        </button>
+        <button class="pitem" data-p="1" aria-expanded="false">
+          <canvas class="pmark" id="thumbStoop" width="24" height="24" aria-hidden="true"></canvas>
+          <canvas class="pcap" data-word="STOOP NYC" aria-hidden="true"></canvas>
+          <span class="plabel">DEVELOPMENT</span>
+          <span class="sr">Stoop NYC</span>
+        </button>
+      </div>
+      <div class="pdetails" style="margin-top:5vh;">
+        <div class="pcard" data-p="0">
+          <em class="tag">IT Director</em>
+          <p>The core team driving the Cosmos blockchain ecosystem. Cosmos powers the largest network of vertically integrated Layer 1 blockchains; 150+ chains securing more than $70B in assets for payments, tokenization, and digital currencies.</p>
+          <a href="https://cosmos.network" target="_blank" rel="noopener">cosmos.network</a>
+        </div>
+        <div class="pcard" data-p="1">
+          <em class="tag">Find your next place, together.</em>
+          <p>An iOS and browser app for deciding your next home, with your people. Paste a listing, score it solo, then the Reveal shows everyone's take. The best fit wins. Free on the <a href="https://apps.apple.com/us/app/stoop-nyc/id6785723407" target="_blank" rel="noopener">App Store</a>.</p>
+          <a href="https://stoopnyc.app" target="_blank" rel="noopener">stoopnyc.app</a>
+        </div>
+      </div>
+    </div>
+    <button class="back" data-close>return</button>
+  </div>
+</div>
+
+<div class="overlay" id="notes" role="dialog" aria-label="About">
+  <div class="overlay-inner">
+    <div class="notes-body panel">
+      <button class="close-x" data-close aria-label="Close">&times;</button>
+      <h2>victor lepri</h2>
+      <p class="sub">New York City. Brazilian soul, artist by craft, technologist by heart; art and technology were never separate.</p>
+      <div class="sect">
+        <canvas class="sect-head" data-word="NOW" data-scale="2" aria-hidden="true"></canvas>
+        <p class="prose">IT Director at Cosmos Labs, the core team driving the Cosmos blockchain ecosystem. My work centers on what really matters at this scale: reliability, security, and sustainability. I design and run the controls, policies, and infrastructure that keep a global Web3 organization moving fast and flexible. <a href="https://cosmos.network" target="_blank" rel="noopener">cosmos.network</a></p>
+      </div>
+      <div class="sect">
+        <canvas class="sect-head" data-word="EXPERIENCE" data-scale="2" aria-hidden="true"></canvas>
+        <p class="prose">I led IT operations at ThinkWell, running a global technical team across 13 countries: cloud, cybersecurity, automation, and change management. I managed product at ChangeDAO, building Web3 platforms for giving and access. In Brazil I founded Caracal, supporting artists and artistic organizations in running their grants and business, artistically and technologically.</p>
+      </div>
+      <div class="sect">
+        <canvas class="sect-head" data-word="SOUND" data-scale="2" aria-hidden="true"></canvas>
+        <p class="prose">I am a jazz pianist. Master of Jazz Piano Performance from Rutgers; B.A. in Piano Performance and Music Education from the State University of Londrina. I think in improvisation, rhythm, structure, and tension and release; expanding these concepts into a holistic vision of technology. The rain on this page plays in E minor; turn the sound on and stay a while.</p>
+      </div>
+      <div class="sect">
+        <canvas class="sect-head" data-word="ORIGIN" data-scale="2" aria-hidden="true"></canvas>
+        <p class="prose">First generation immigrant from Brazil. My love for technology and operations started in my teens, building and hosting game servers so players across South America could reach the games they loved with low latency. From there I dedicated my life to accessible, innovative IT operations that bridge the gap between vision, innovation, and action.</p>
+      </div>
+      <div class="sect">
+        <canvas class="sect-head" data-word="GOAL" data-scale="2" aria-hidden="true"></canvas>
+        <p class="prose">I challenge traditional systems thinking, put the human on the other end first, and bridge worlds: art and technology, business and people, cultures and languages. I create technology to expand the possibilities of connection.</p>
+      </div>
+      <div class="socials">
+        <a href="https://www.linkedin.com/in/victorlepri/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://x.com/VictorLepri" target="_blank" rel="noopener">X</a>
+        <a href="https://github.com/victorlepri" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://victorlepri.dev" target="_blank" rel="noopener">victorlepri.dev</a>
+      </div>
+      <button class="back" data-close>return</button>
+    </div>
+  </div>
+</div>
+
+<div id="fallback"><p>This sketch needs WebGL2. Open it in a current browser to see the field.</p></div>
+
+<script>
+(function(){
+"use strict";
+
+/* 5x7 pixel font, columns left to right as 5 char rows top to bottom */
+var FONT = {
+A:["01110","10001","10001","11111","10001","10001","10001"],
+B:["11110","10001","10001","11110","10001","10001","11110"],
+C:["01111","10000","10000","10000","10000","10000","01111"],
+D:["11110","10001","10001","10001","10001","10001","11110"],
+E:["11111","10000","10000","11110","10000","10000","11111"],
+F:["11111","10000","10000","11110","10000","10000","10000"],
+G:["01111","10000","10000","10111","10001","10001","01111"],
+H:["10001","10001","10001","11111","10001","10001","10001"],
+I:["11111","00100","00100","00100","00100","00100","11111"],
+J:["00111","00010","00010","00010","00010","10010","01100"],
+K:["10001","10010","10100","11000","10100","10010","10001"],
+L:["10000","10000","10000","10000","10000","10000","11111"],
+M:["10001","11011","10101","10101","10001","10001","10001"],
+N:["10001","11001","10101","10011","10001","10001","10001"],
+O:["01110","10001","10001","10001","10001","10001","01110"],
+P:["11110","10001","10001","11110","10000","10000","10000"],
+Q:["01110","10001","10001","10001","10101","10010","01101"],
+R:["11110","10001","10001","11110","10100","10010","10001"],
+S:["01111","10000","10000","01110","00001","00001","11110"],
+T:["11111","00100","00100","00100","00100","00100","00100"],
+U:["10001","10001","10001","10001","10001","10001","01110"],
+V:["10001","10001","10001","10001","10001","01010","00100"],
+W:["10001","10001","10001","10101","10101","11011","10001"],
+X:["10001","01010","00100","00100","00100","01010","10001"],
+Y:["10001","01010","00100","00100","00100","00100","00100"],
+Z:["11111","00001","00010","00100","01000","10000","11111"],
+"\u0398":["01110","10001","10001","11111","10001","10001","01110"],
+" ":["00000","00000","00000","00000","00000","00000","00000"]
+};
+
+function wordWidth(w){ return w.length*6 - 1; }
+
+/* draws a word into a 2d canvas as glowing led pixels */
+function drawWord(cv, word, scale, t, hot){
+  var wpx = wordWidth(word), hpx = 7;
+  var pad = 2;
+  var W = (wpx + pad*2)*scale, H = (hpx + pad*2)*scale;
+  if(cv.width !== W){ cv.width = W; cv.height = H; cv.style.width = W + "px"; cv.style.height = H + "px"; }
+  var g = cv.getContext("2d");
+  g.clearRect(0,0,W,H);
+  var x0 = pad;
+  for(var i=0;i<word.length;i++){
+    var gl = FONT[word[i]] || FONT[" "];
+    for(var r=0;r<7;r++){
+      for(var c=0;c<5;c++){
+        if(gl[r][c] === "1"){
+          var n = Math.sin((i*5+c)*3.7 + r*1.9 + t*2.2)*0.5+0.5;
+          var b = 0.55 + 0.45*n;
+          if(hot) b = Math.min(1, b+0.35);
+          var col = b > 0.82 ? "255,180,220" : "255,62,160";
+          g.fillStyle = "rgba(" + col + "," + (0.35+0.65*b).toFixed(2) + ")";
+          g.fillRect((x0+c)*scale, (pad+r)*scale, scale-1, scale-1);
+        }
+      }
+    }
+    x0 += 6;
+  }
+  return cv;
+}
+
+var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- webgl field ---------- */
+var canvas = document.getElementById("field");
+var gl = canvas.getContext("webgl2", {antialias:false, alpha:false});
+if(!gl){
+  document.getElementById("fallback").style.display = "grid";
+  canvas.style.display = "none";
+}
+
+var VS = "#version 300 es\nvoid main(){ vec2 p = vec2((gl_VertexID<<1 & 2), (gl_VertexID & 2)); gl_Position = vec4(p*2.0-1.0, 0.0, 1.0); }";
+
+/* pass 1: one fragment per grid cell, writes cell color */
+var FS1 = `#version 300 es
+precision highp float;
+uniform vec2 u_grid;
+uniform float u_t;
+uniform vec3 u_mouse;
+uniform vec4 u_hand;
+uniform float u_gust;
+uniform vec2 u_word;
+uniform vec2 u_seed;
+uniform vec4 u_imps[12];
+uniform sampler2D u_mask;
+out vec4 o;
+
+float hash12(vec2 p){ vec3 q = fract(vec3(p.xyx)*0.1031); q += dot(q, q.yzx+33.33); return fract((q.x+q.y)*q.z); }
+float vnoise(vec2 p){
+  vec2 i = floor(p), f = fract(p);
+  f = f*f*(3.0-2.0*f);
+  float a = hash12(i), b = hash12(i+vec2(1,0)), c = hash12(i+vec2(0,1)), d = hash12(i+vec2(1,1));
+  return mix(mix(a,b,f.x), mix(c,d,f.x), f.y);
+}
+float fbm(vec2 p){
+  float v = 0.0, a = 0.5;
+  for(int k=0;k<3;k++){ v += a*vnoise(p); p *= 2.03; a *= 0.5; }
+  return v;
+}
+vec3 warm(float t){
+  t = clamp(t, 0.0, 1.0);
+  vec3 c1 = vec3(0.16,0.005,0.05);
+  vec3 c2 = vec3(0.55,0.03,0.16);
+  vec3 c3 = vec3(0.93,0.09,0.38);
+  vec3 c4 = vec3(1.00,0.24,0.62);
+  vec3 c5 = vec3(1.00,0.52,0.78);
+  if(t < 0.25) return mix(vec3(0.0), c1, t/0.25);
+  if(t < 0.45) return mix(c1, c2, (t-0.25)/0.20);
+  if(t < 0.68) return mix(c2, c3, (t-0.45)/0.23);
+  if(t < 0.86) return mix(c3, c4, (t-0.68)/0.18);
+  return mix(c4, c5, (t-0.86)/0.14);
+}
+float leafLayer(vec2 c, float t, vec2 tile, float thin, float dens, float ofs){
+  vec2 dir = normalize(vec2(1.0, 0.62));
+  vec2 uv = vec2(dot(c, dir)*tile.x, dot(c, vec2(-dir.y, dir.x))*tile.y);
+  uv += (fbm(c*0.04 + u_seed*0.23 + vec2(ofs, t*0.015)) - 0.5)*2.2;
+  vec2 id = floor(uv);
+  vec2 f = fract(uv) - 0.5;
+  float h = hash12(id + floor(u_seed*13.0) + vec2(ofs));
+  if(h < dens) return 0.0;
+  float wob = sin(t*(0.4 + h*0.8) + h*40.0)*0.12;
+  float stretch = mix(0.9, 1.7, fract(h*3.3));
+  float leaf = smoothstep(0.55, 0.25, length(vec2(f.x*stretch, (f.y + wob)*thin)));
+  leaf *= 0.65 + 0.35*smoothstep(0.02, 0.10, abs(f.y + wob));
+  return leaf * (0.5 + 0.5*fract(h*7.1));
+}
+/* abstract fern frond: a rachis with paired leaflets tapering toward the tip */
+float fern(vec2 c, float t, float dens, float ofs){
+  vec2 dir = normalize(vec2(1.0, 0.62));
+  vec2 uv = vec2(dot(c, dir)*0.075, dot(c, vec2(-dir.y, dir.x))*0.11);
+  uv += (fbm(c*0.035 + u_seed*0.5 + vec2(ofs, t*0.012)) - 0.5)*0.7;
+  vec2 id = floor(uv);
+  vec2 f = fract(uv) - 0.5;
+  float h = hash12(id + floor(u_seed*9.0) + vec2(ofs));
+  if(h < dens) return 0.0;
+  float wob = sin(t*(0.3 + h*0.6) + h*30.0)*0.07;
+  float along = f.y + 0.5;
+  float x = f.x + wob*along;
+  float stem = smoothstep(0.055, 0.0, abs(x)) * smoothstep(0.5, 0.44, abs(f.y));
+  float reach = 0.36*(1.0 - along);
+  float ph = along*7.0 + abs(x)*1.4;
+  float band = abs(fract(ph) - 0.5);
+  float pinna = smoothstep(0.15, 0.02, band) * smoothstep(reach, reach-0.06, abs(x)) * step(0.03, abs(x));
+  float frond = max(stem, pinna*0.9) * smoothstep(0.5, 0.36, abs(f.y));
+  return frond * (0.55 + 0.45*fract(h*5.7));
+}
+/* abstract grass shoots: thin curved blades rising and tapering to a point */
+float grass(vec2 c, float t, float dens, float ofs){
+  vec2 uv = vec2(c.x*0.16, c.y*0.048) + (fbm(c*0.03 + u_seed*0.8 + vec2(ofs, 0.0)) - 0.5)*0.5;
+  vec2 id = floor(uv);
+  vec2 f = vec2(fract(uv.x) - 0.5, fract(uv.y));
+  float h = hash12(id + floor(u_seed*5.0) + vec2(ofs));
+  if(h < dens) return 0.0;
+  float best = 0.0;
+  for(int b=0;b<3;b++){
+    float hb = fract(h*(3.1 + float(b)*2.3));
+    float baseX = (hb - 0.5)*0.66;
+    float lean = (hb - 0.5)*0.85 + sin(t*(0.5 + hb) + hb*20.0)*0.10;
+    float top = 0.55 + 0.4*fract(hb*7.0);
+    float yy = f.y;
+    float bx = baseX + lean*yy*yy;
+    float wide = mix(0.05, 0.007, clamp(yy/top, 0.0, 1.0));
+    float blade = smoothstep(wide, 0.0, abs(f.x - bx)) * step(yy, top) * step(0.0, yy);
+    best = max(best, blade);
+  }
+  return best * (0.5 + 0.5*fract(h*4.3));
+}
+/* the field, layer by layer; D is the hand displacement, and each layer rides it
+   by its own depth so the near growth whips while the far growth barely stirs */
+float cascade(vec2 c, vec2 D, float t){
+  vec2 dir = normalize(vec2(1.0, 0.62));
+  /* density gives the foliage mass; thickets resist the hand, sparse growth yields */
+  float dens = smoothstep(0.30, 0.75, fbm(c*0.045 + u_seed*0.7));
+  vec2 Dr = D * mix(1.18, 0.52, dens);
+  /* wind: an occasional gust rolls a wave along the flow diagonal */
+  float wave = sin(dot(c, dir)*0.115 - t*1.55 + fbm(c*0.06 + u_seed*1.3)*2.4);
+  vec2 W = vec2(0.9, 0.30) * (wave * u_gust);
+  vec2 c0 = c + Dr*0.40 + W*0.35;
+  vec2 c1 = c + Dr*0.55 + W*0.45;
+  vec2 c2 = c + Dr*1.00 + W*0.90;
+  vec2 c3 = c + Dr*0.30 + W*0.35;
+  vec2 c4 = c + Dr*1.25 + W*1.15;
+  vec2 c5 = c + Dr*1.50 + W*1.35;
+  vec2 cm = c + Dr*1.00 + W*0.80;
+  vec2 evo = (vec2(fbm(c*0.02 + u_seed*1.9 + vec2(t*0.010, 0.0)),
+                   fbm(c*0.02 + u_seed*2.7 + vec2(0.0, t*0.008))) - 0.5) * 3.0;
+  float along = dot(c0, dir);
+  float across = dot(c0, vec2(-dir.y, dir.x));
+  vec2 p = vec2(along*0.085, across*0.30) + vec2(-t*0.12, t*0.04) + u_seed + evo*0.35;
+  float bands = fbm(p);
+  vec2 q = vec2(dot(c1, vec2(dir.x,-dir.y))*0.15, dot(c1, vec2(dir.y,dir.x))*0.27) + vec2(t*0.08, t*0.016) + u_seed*0.5 + evo*0.25;
+  float hatch = fbm(q);
+  float clump = smoothstep(0.34, 0.72, fbm(cm*0.045 + vec2(t*0.006, -t*0.009) + u_seed*0.7 + evo*0.30));
+  float lf = leafLayer(c2, t, vec2(0.125, 0.25), 1.8, 0.34, 0.0);
+  float ln = leafLayer(c3, t, vec2(0.045, 0.30), 2.6, 0.56, 31.7);
+  float fr = fern(c4, t, 0.46, 53.1);
+  float gr = grass(c5, t, 0.44, 88.3);
+  return (bands*bands*1.72 + hatch*0.28 + lf*1.02 + ln*1.12 + fr*1.15 + gr*0.85) * clump;
+}
+float drops(vec2 c, float t){
+  float best = 0.0;
+  for(int L=0; L<3; L++){
+    float h = hash12(vec2(c.x + floor(u_seed.x*3.0), float(L)*17.31));
+    if(h < (L==2 ? 0.92 : 0.84)) continue;
+    float sp = (L==2) ? mix(0.7,1.6,fract(h*5.1)) : mix(5.0,15.0,fract(h*7.7));
+    float len = mix(7.0, 22.0, fract(h*13.1));
+    float cyc = u_grid.y + len + mix(24.0, 120.0, fract(h*3.3));
+    float startT = pow(fract(h*57.0), 0.75) * 13.0;
+    float tt = max(t - startT, 0.0);
+    float head = mod(tt*sp, cyc) - len;
+    float d = head - c.y;
+    if(d >= 0.0 && d < len){
+      float i = pow(1.0 - d/len, 1.7);
+      if(d < 1.0) i = 1.15;
+      if(L == 2) i *= 0.55;
+      best = max(best, i);
+    }
+  }
+  return best;
+}
+void main(){
+  vec2 cell = floor(gl_FragCoord.xy);
+  cell.y = u_grid.y - 1.0 - cell.y;
+  float t = u_t;
+
+  /* the hand: five lobes fanned across the direction of travel, so the
+     boundary reads as fingers, not a ball; pressing reaches deeper */
+  vec2 md = cell - u_mouse.xy;
+  vec2 hdir = u_hand.xy;
+  vec2 hperp = vec2(-hdir.y, hdir.x);
+  float spread = u_hand.z;
+  float press = u_hand.w;
+  float ig = 0.0;
+  for(int i=0;i<5;i++){
+    float fi = float(i) - 2.0;
+    vec2 off = hperp*(fi*2.7*spread) + hdir*((2.4 - abs(fi)*0.9)*spread);
+    vec2 fd = md - off;
+    float dmf = abs(fd.x) + abs(fd.y);
+    float reach = 88.0*(1.0 - abs(fi)*0.13)*(1.0 + press*0.9);
+    float jag = vnoise(fd*0.45 + vec2(t*0.8 + fi*7.3, u_seed.x));
+    ig += exp(-dmf*dmf/reach) * (0.42 + 0.70*jag) * (1.0 - abs(fi)*0.10);
+  }
+  ig *= u_mouse.z;
+  float dm = abs(md.x) + abs(md.y);
+  vec2 rdir = (dm > 0.0001) ? md/dm : vec2(0.0);
+  vec2 part = rdir*(0.8 + 0.5*press)*min(ig, 1.5);
+
+  float sway = 0.0;
+  for(int i=0;i<12;i++){
+    vec4 imp = u_imps[i];
+    float age = t - imp.z;
+    if(imp.z <= 0.0 || age < 0.0 || age > 2.5) continue;
+    float fr = 2.6 + 1.2*fract(imp.z*7.13);
+    vec2 dv = cell - (imp.xy - vec2(0.0, age*2.6));
+    float dmi = abs(dv.x) + abs(dv.y);
+    float k = exp(-dmi*dmi/80.0) * (0.7 + 0.5*vnoise(cell*0.35 + vec2(imp.z, imp.z*1.7)));
+    sway += imp.w * k * sin(age*fr - dmi*0.3) * exp(-age*1.9);
+  }
+  sway = clamp(sway, -1.4, 1.4);
+  part += vec2(sway, sway*0.22);
+
+  float v = cascade(cell, part, t);
+  vec2 pg = cell + part;
+  v *= 0.40 + 0.60*vnoise(pg*1.7 + vec2(t*0.25, -t*0.14));
+  v = max(v - 0.06, 0.0);
+  float lv = floor(v*6.0)/6.0;
+  float dth = mod(cell.x + cell.y, 2.0);
+  float fr2 = fract(v*6.0);
+  if(abs(fr2-0.5) < 0.22) lv += (dth - 0.5)/6.0;
+  vec3 col = warm(lv);
+  col *= 0.75 + 0.25*hash12(cell*1.13 + floor(t*1.5));
+
+  /* the rain never reacts to the hand */
+  float b = drops(cell, t);
+  if(b > 0.02){
+    float hb = hash12(vec2(cell.x, 4.7));
+    vec3 bc = mix(vec3(0.16,0.28,1.0), vec3(0.42,0.16,1.0), hb);
+    if(b > 1.05) bc = vec3(0.62,0.71,1.0);
+    col = max(col, bc*min(b*1.2, 1.25));
+  }
+
+  vec4 m = texelFetch(u_mask, ivec2(gl_FragCoord.xy), 0);
+  if(m.g > 0.5) col *= 0.40;
+  if(m.a > 0.5) col *= mix(1.0, 0.55, u_word.y);
+  if(m.r > 0.5){
+    float hd = hash12(cell*2.17);
+    float born = smoothstep(1.5 + hd*4.0, 3.2 + hd*4.0, t);
+    float cyc = fract(t/18.0);
+    float ero = smoothstep(0.80,0.87,cyc)*(1.0 - smoothstep(0.90,0.985,cyc));
+    float gate = step(ero*0.92, hash12(cell*1.71 + floor(t/18.0)*31.0));
+    float shim = 0.82 + 0.18*vnoise(cell*2.7 + vec2(t*1.4,0.0));
+    vec3 gcol = vec3(1.0, 0.88, 0.95)*shim*1.15;
+    col = mix(col*0.18, gcol, born*gate);
+    col += vec3(1.0,0.3,0.7)*0.16*born*gate;
+  }
+  /* the identity line: a quieter voice under the name, one thought at a time */
+  if(m.b > 0.5){
+    float hd2 = hash12(cell*3.31);
+    float rise = smoothstep(0.02 + hd2*0.16, 0.20 + hd2*0.14, u_word.x);
+    float fall = 1.0 - smoothstep(0.84 + hd2*0.09, 0.97, u_word.x);
+    float g2 = rise*fall*u_word.y;
+    float shim2 = 0.78 + 0.22*vnoise(cell*2.6 + vec2(t*1.3, 5.0));
+    vec3 icol = vec3(0.98, 0.66, 0.84)*shim2;
+    col = mix(col, icol*0.72, g2*0.92);
+  }
+
+  col *= 1.0 + min(ig, 1.1)*0.22;
+  o = vec4(col, 1.0);
+}`;
+
+/* pass 2: full res, led shaping and glow */
+var FS2 = `#version 300 es
+precision highp float;
+uniform vec2 u_res;
+uniform vec2 u_grid;
+uniform float u_cell;
+uniform float u_t;
+uniform float u_dim;
+uniform sampler2D u_field;
+out vec4 o;
+float hash12(vec2 p){ vec3 q = fract(vec3(p.xyx)*0.1031); q += dot(q, q.yzx+33.33); return fract((q.x+q.y)*q.z); }
+void main(){
+  vec2 px = gl_FragCoord.xy;
+  vec2 cellF = px / u_cell;
+  ivec2 cell = ivec2(floor(cellF));
+  vec2 f = fract(cellF);
+  ivec2 gmax = ivec2(u_grid) - 1;
+  vec3 c0 = texelFetch(u_field, clamp(cell, ivec2(0), gmax), 0).rgb;
+  vec3 nL = texelFetch(u_field, clamp(cell+ivec2(-1,0), ivec2(0), gmax), 0).rgb;
+  vec3 nR = texelFetch(u_field, clamp(cell+ivec2( 1,0), ivec2(0), gmax), 0).rgb;
+  vec3 nU = texelFetch(u_field, clamp(cell+ivec2(0, 1), ivec2(0), gmax), 0).rgb;
+  vec3 nD = texelFetch(u_field, clamp(cell+ivec2(0,-1), ivec2(0), gmax), 0).rgb;
+  vec2 d2 = abs(f - 0.5);
+  float d = max(d2.x, d2.y);
+  float core = 1.0 - smoothstep(0.30, 0.46, d);
+  float halo = 1.0 - smoothstep(0.10, 0.62, d);
+  vec3 col = c0 * (core + 0.30*halo);
+  col += (nL+nR+nU+nD) * 0.075 * (1.0 - core*0.5);
+  float gain = 0.95 + 0.07*hash12(vec2(floor(u_t*9.0), 1.7));
+  col *= gain;
+  col = 1.0 - exp(-col*1.75);
+  col *= u_dim;
+  o = vec4(col, 1.0);
+}`;
+
+function compile(type, src){
+  var s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+  return s;
+}
+function program(fs){
+  var p = gl.createProgram();
+  gl.attachShader(p, compile(gl.VERTEX_SHADER, VS));
+  gl.attachShader(p, compile(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(p);
+  if(!gl.getProgramParameter(p, gl.LINK_STATUS)) console.error(gl.getProgramInfoLog(p));
+  return p;
+}
+
+var state = {cols:0, rows:0, cellPx:14, dim:1, dimTarget:1, bgScale:1, bgScaleTarget:1,
+  mouse:{x:-999,y:-999,tx:-999,ty:-999,vx:0,vy:0,s:0},
+  hand:{dx:0.85,dy:0.53,spread:0.3,press:0}};
+var pressed = false;
+
+/* identity words rendered under the name, on the same grid */
+var ID_WORDS = ["JAZZ PIANIST","TECHNOLOGIST","BRAZILIAN SOUL","NEW YORK CITY"];
+var ID_START = 9.0, ID_PERIOD = 7.0;
+var idIdx = -1, idFit = false;
+
+/* the sound of the rain; nothing plays until the visitor asks */
+var Sound = (function(){
+  var ctx = null, master = null, on = false, voices = 0, lastNote = 0, lastBass = 0;
+  var SCALE = [0,3,5,7,10]; /* E minor pentatonic intervals */
+  function freqOf(deg){
+    var oct = Math.floor(deg/5), st = SCALE[((deg%5)+5)%5];
+    return 41.2*Math.pow(2, (st + oct*12)/12);
+  }
+  function ensure(){
+    if(ctx) return;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    ctx = new AC();
+    master = ctx.createGain();
+    master.gain.value = 0.0;
+    var comp = ctx.createDynamicsCompressor();
+    master.connect(comp);
+    comp.connect(ctx.destination);
+    /* the bed: a low hum and a faint electric hiss, right at the threshold */
+    var o1 = ctx.createOscillator(); o1.type = "sine"; o1.frequency.value = 41.2;
+    var g1 = ctx.createGain(); g1.gain.value = 0.016;
+    o1.connect(g1); g1.connect(master); o1.start();
+    var o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = 61.74;
+    var g2 = ctx.createGain(); g2.gain.value = 0.009;
+    o2.connect(g2); g2.connect(master); o2.start();
+    var len = 2*ctx.sampleRate;
+    var buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    var d = buf.getChannelData(0), lp = 0;
+    for(var i=0;i<len;i++){ var w = Math.random()*2-1; lp = lp*0.94 + w*0.06; d[i] = lp*0.8; }
+    var src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+    var bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 3200; bp.Q.value = 0.5;
+    var g3 = ctx.createGain(); g3.gain.value = 0.05;
+    src.connect(bp); bp.connect(g3); g3.connect(master); src.start();
+  }
+  function note(col, cols, vel, bass){
+    if(!on || !ctx) return;
+    var now = ctx.currentTime;
+    if(bass){ if(now - lastBass < 0.5 || voices > 7) return; lastBass = now; }
+    else { if(now - lastNote < 0.075 || voices > 7) return; lastNote = now; }
+    var x = col/Math.max(cols,1);
+    var deg = bass ? Math.floor(x*5) : Math.floor(x*14) + 3;
+    var f = freqOf(deg)*(bass ? 0.5 : 2.0);
+    var dur = bass ? 3.2 : 1.7;
+    var g = ctx.createGain();
+    g.gain.setValueAtTime(0, now);
+    g.gain.linearRampToValueAtTime(0.22*vel*(bass?0.85:1.0), now + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0004, now + dur);
+    var lpf = ctx.createBiquadFilter(); lpf.type = "lowpass";
+    lpf.frequency.value = bass ? 900 : 2600; lpf.Q.value = 0.2;
+    var mixg = ctx.createGain(); mixg.gain.value = 1.0;
+    var o1 = ctx.createOscillator(); o1.type = "sine"; o1.frequency.value = f;
+    var og1 = ctx.createGain(); og1.gain.value = 1.0; o1.connect(og1); og1.connect(mixg);
+    var o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = f*2.0;
+    var og2 = ctx.createGain(); og2.gain.value = 0.30; o2.connect(og2); og2.connect(mixg);
+    var o3 = ctx.createOscillator(); o3.type = "triangle"; o3.frequency.value = f*1.004;
+    var og3 = ctx.createGain(); og3.gain.value = 0.35; o3.connect(og3); og3.connect(mixg);
+    mixg.connect(lpf); lpf.connect(g);
+    if(ctx.createStereoPanner){
+      var pan = ctx.createStereoPanner();
+      pan.pan.value = x*1.5 - 0.75;
+      g.connect(pan); pan.connect(master);
+    } else {
+      g.connect(master);
+    }
+    var stopAt = now + dur + 0.15;
+    o1.start(now); o2.start(now); o3.start(now);
+    o1.stop(stopAt); o2.stop(stopAt); o3.stop(stopAt);
+    voices++;
+    o1.onended = function(){ voices--; };
+  }
+  function toggle(){
+    ensure();
+    if(!ctx) return false;
+    on = !on;
+    if(ctx.state === "suspended") ctx.resume();
+    master.gain.setTargetAtTime(on ? 0.16 : 0.0, ctx.currentTime, 0.35);
+    return on;
+  }
+  function duck(hidden){
+    if(!ctx || !on) return;
+    master.gain.setTargetAtTime(hidden ? 0.0 : 0.16, ctx.currentTime, 0.2);
+  }
+  return {note:note, toggle:toggle, duck:duck, isOn:function(){ return on; }};
+})();
+
+/* cpu mirror of the shader's rain so landings can ring; float32 emulated
+   so the columns match what the eye sees */
+function fr32(x){ return Math.fround(x); }
+function frac32(x){ return fr32(x - Math.floor(x)); }
+function hash12cpu(px, py){
+  var qx = frac32(fr32(px*fr32(0.1031)));
+  var qy = frac32(fr32(py*fr32(0.1031)));
+  var qz = frac32(fr32(px*fr32(0.1031)));
+  var dd = fr32(fr32(qx*fr32(qy + fr32(33.33))) + fr32(qy*fr32(qz + fr32(33.33))) + fr32(qz*fr32(qx + fr32(33.33))));
+  qx = fr32(qx + dd); qy = fr32(qy + dd); qz = fr32(qz + dd);
+  return frac32(fr32(fr32(qx + qy)*qz));
+}
+function mixn(a, b, x){ return a + (b - a)*x; }
+var rainCols = [];
+function rebuildRain(seedX, rows, cols){
+  rainCols = [];
+  for(var L=0; L<3; L++){
+    for(var x=0; x<cols; x++){
+      var h = hash12cpu(x + Math.floor(seedX*3.0), L*17.31);
+      if(h < (L===2 ? 0.92 : 0.84)) continue;
+      var hf = function(m){ return frac32(fr32(h*m)); };
+      var sp = (L===2) ? mixn(0.7,1.6,hf(5.1)) : mixn(5.0,15.0,hf(7.7));
+      var len = mixn(7.0, 22.0, hf(13.1));
+      var cyc = rows + len + mixn(24.0, 120.0, hf(3.3));
+      var startT = Math.pow(hf(57.0), 0.75)*13.0;
+      rainCols.push({x:x, L:L, sp:sp, len:len, cyc:cyc, st:startT, prevP:-1});
+    }
+  }
+}
+function rainTick(t, rows, cols){
+  for(var i=0;i<rainCols.length;i++){
+    var rc = rainCols[i];
+    var tt = t - rc.st;
+    if(tt <= 0) continue;
+    var p = (tt*rc.sp) % rc.cyc;
+    var landP = rows - 1 + rc.len;
+    if(rc.prevP >= 0 && rc.prevP < landP && p >= landP){
+      var vel = rc.L === 2 ? 0.9 : 0.45 + ((rc.sp - 5)/10)*0.4;
+      Sound.note(rc.x, cols, vel, rc.L === 2);
+    }
+    rc.prevP = p;
+  }
+}
+
+if(gl){
+  var p1 = program(FS1), p2 = program(FS2);
+  var u1 = {grid:gl.getUniformLocation(p1,"u_grid"), t:gl.getUniformLocation(p1,"u_t"),
+    mouse:gl.getUniformLocation(p1,"u_mouse"), hand:gl.getUniformLocation(p1,"u_hand"),
+    gust:gl.getUniformLocation(p1,"u_gust"), word:gl.getUniformLocation(p1,"u_word"),
+    imps:gl.getUniformLocation(p1,"u_imps"), mask:gl.getUniformLocation(p1,"u_mask"),
+    seed:gl.getUniformLocation(p1,"u_seed")};
+  var imps = new Float32Array(48);
+  var impIdx = 0, lastImp = -1;
+  var seed = [Math.random()*89.0 + 13.0, Math.random()*61.0 + 7.0];
+  var u2 = {res:gl.getUniformLocation(p2,"u_res"), grid:gl.getUniformLocation(p2,"u_grid"), cell:gl.getUniformLocation(p2,"u_cell"), t:gl.getUniformLocation(p2,"u_t"), dim:gl.getUniformLocation(p2,"u_dim"), field:gl.getUniformLocation(p2,"u_field")};
+  var vao = gl.createVertexArray();
+  var fieldTex = gl.createTexture();
+  var maskTex = gl.createTexture();
+  var fbo = gl.createFramebuffer();
+
+  function setupTex(tex, w, h, data){
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, data || null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  }
+
+  /* the mask carries the name in red, its margin in green, the identity line
+     in blue and the identity margin in alpha */
+  function buildMask(idWord){
+    var cols = state.cols, rows = state.rows;
+    var data = new Uint8Array(cols*rows*4);
+    function stamp(word, cx, cy, s, ch){
+      var w = wordWidth(word);
+      var x0 = Math.round(cx - w*s/2), y0 = Math.round(cy - 3.5*s);
+      for(var i=0;i<word.length;i++){
+        var glp = FONT[word[i]] || FONT[" "];
+        for(var r=0;r<7;r++) for(var c=0;c<5;c++){
+          if(glp[r][c] !== "1") continue;
+          for(var sy=0;sy<s;sy++) for(var sx=0;sx<s;sx++){
+            var X = x0 + (i*6+c)*s + sx, Y = y0 + r*s + sy;
+            if(X<0||Y<0||X>=cols||Y>=rows) continue;
+            data[(Y*cols+X)*4 + ch] = 255;
+          }
+        }
+      }
+    }
+    var one = "VICTOR LEPRI";
+    var w1 = wordWidth(one);
+    var midY = Math.round(rows*0.44);
+    var s = Math.max(1, Math.floor((cols*0.86)/w1));
+    var nameBottom;
+    if(w1*s <= cols*0.92){
+      stamp(one, cols/2, midY, s, 0);
+      nameBottom = midY + Math.ceil(3.5*s);
+    } else {
+      var s2 = Math.max(1, Math.floor((cols*0.86)/wordWidth("VICTOR")));
+      stamp("VICTOR", cols/2, midY - 5*s2, s2, 0);
+      stamp("LEPRI", cols/2, midY + 5*s2, s2, 0);
+      nameBottom = midY + 5*s2 + Math.ceil(3.5*s2);
+    }
+    var fits = false;
+    if(idWord && wordWidth(idWord) <= cols*0.9){
+      stamp(idWord, cols/2, nameBottom + 7, 1, 2);
+      fits = true;
+    }
+    /* dilate the name into green, the identity line into alpha */
+    for(var y=0;y<rows;y++) for(var x=0;x<cols;x++){
+      var idx = (y*cols+x)*4;
+      if(data[idx] !== 255){
+        var near = 0;
+        for(var dy=-1;dy<=1 && !near;dy++) for(var dx=-1;dx<=1;dx++){
+          var nx=x+dx, ny=y+dy;
+          if(nx<0||ny<0||nx>=cols||ny>=rows) continue;
+          if(data[(ny*cols+nx)*4] === 255){ near=1; break; }
+        }
+        if(near) data[idx+1] = 255;
+      }
+      if(data[idx+2] !== 255){
+        var near2 = 0;
+        for(var dy2=-1;dy2<=1 && !near2;dy2++) for(var dx2=-1;dx2<=1;dx2++){
+          var nx2=x+dx2, ny2=y+dy2;
+          if(nx2<0||ny2<0||nx2>=cols||ny2>=rows) continue;
+          if(data[(ny2*cols+nx2)*4+2] === 255){ near2=1; break; }
+        }
+        if(near2) data[idx+3] = 255;
+      }
+    }
+    /* mask texture rows are gpu bottom up, flip so shader texelFetch matches */
+    var flipped = new Uint8Array(cols*rows*4);
+    for(var yy=0; yy<rows; yy++){
+      flipped.set(data.subarray(yy*cols*4, (yy+1)*cols*4), (rows-1-yy)*cols*4);
+    }
+    setupTex(maskTex, cols, rows, flipped);
+    return fits;
+  }
+
+  function resize(){
+    var W = window.innerWidth, H = window.innerHeight;
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    var base = Math.min(W, H);
+    var div = base < 820 ? 64 : 72;
+    state.cellPx = Math.max(7, Math.round(base/div));
+    state.cols = Math.ceil(W/state.cellPx);
+    state.rows = Math.ceil(H/state.cellPx);
+    canvas.width = Math.round(W*dpr);
+    canvas.height = Math.round(H*dpr);
+    state.cellDev = state.cellPx*dpr;
+    setupTex(fieldTex, state.cols, state.rows, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fieldTex, 0);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    idFit = buildMask(idIdx >= 0 ? ID_WORDS[idIdx] : null);
+    rebuildRain(seed[0], state.rows, state.cols);
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  var t0 = performance.now(), paused = false, lastNow = t0, bgT = 0;
+  var timeScale = reduced ? 0.05 : 1.0;
+  document.addEventListener("visibilitychange", function(){
+    paused = document.hidden;
+    lastNow = performance.now();
+    Sound.duck(document.hidden);
+  });
+
+  function frame(){
+    requestAnimationFrame(frame);
+    if(paused) return;
+    var now = performance.now();
+    var dt = Math.min((now - lastNow)/1000, 0.05);
+    lastNow = now;
+    /* background clock eases almost to a stop while an overlay is open */
+    state.bgScale += (state.bgScaleTarget - state.bgScale)*0.08;
+    bgT += dt * timeScale * state.bgScale;
+    var t = bgT;
+    state.dim += (state.dimTarget - state.dim)*0.06;
+    var pmx = state.mouse.x, pmy = state.mouse.y;
+    state.mouse.x += (state.mouse.tx - state.mouse.x)*0.16;
+    state.mouse.y += (state.mouse.ty - state.mouse.y)*0.16;
+    state.mouse.vx = state.mouse.vx*0.88 + (state.mouse.x - pmx)*0.35;
+    state.mouse.vy = state.mouse.vy*0.88 + (state.mouse.y - pmy)*0.35;
+    var vmag = Math.hypot(state.mouse.vx, state.mouse.vy);
+    if(vmag > 1.2){
+      state.mouse.vx *= 1.2/vmag;
+      state.mouse.vy *= 1.2/vmag;
+      vmag = 1.2;
+    }
+    state.mouse.s *= 0.985;
+    /* the hand: direction follows travel, the fingers splay with speed,
+       pressing pushes deeper; everything relaxes the moment the hand rests */
+    if(vmag > 0.03){
+      var ux = state.mouse.vx/vmag, uy = state.mouse.vy/vmag;
+      state.hand.dx += (ux - state.hand.dx)*0.14;
+      state.hand.dy += (uy - state.hand.dy)*0.14;
+      var hl = Math.hypot(state.hand.dx, state.hand.dy) || 1;
+      state.hand.dx /= hl; state.hand.dy /= hl;
+    }
+    var spreadT = Math.min(1, 0.30 + vmag*1.05);
+    state.hand.spread += (spreadT - state.hand.spread)*0.10;
+    state.hand.press += ((pressed ? 1 : 0) - state.hand.press)*0.14;
+    if(state.mouse.s > 0.5 && Math.abs(state.mouse.vx) > 0.05 && t - lastImp > 0.07){
+      var amp = Math.max(-1.1, Math.min(1.1, state.mouse.vx*2.2));
+      imps[impIdx*4] = state.mouse.x;
+      imps[impIdx*4+1] = state.mouse.y;
+      imps[impIdx*4+2] = t;
+      imps[impIdx*4+3] = amp;
+      impIdx = (impIdx + 1) % 12;
+      lastImp = t;
+    }
+    /* wind, in slow occasional gusts */
+    var gust = 0;
+    if(!reduced){
+      var gsum = Math.sin(t*0.050 + seed[0]) + 0.6*Math.sin(t*0.131 + seed[1]) + 0.35*Math.sin(t*0.023 + 2.4);
+      gust = Math.min(1, Math.max(0, (gsum - 1.15)*1.9));
+    }
+    /* the identity line swaps words on its own slow clock */
+    var wordPhase = 0, wordOn = 0;
+    if(t > ID_START){
+      var k = reduced ? 0 : Math.floor((t - ID_START)/ID_PERIOD) % ID_WORDS.length;
+      if(k !== idIdx){ idIdx = k; idFit = buildMask(ID_WORDS[k]); }
+      wordPhase = reduced ? 0.5 : ((t - ID_START)/ID_PERIOD) % 1;
+      wordOn = idFit ? 1 : 0;
+    }
+    /* the rain rings when sound is on */
+    rainTick(t, state.rows, state.cols);
+
+    gl.bindVertexArray(vao);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.viewport(0, 0, state.cols, state.rows);
+    gl.useProgram(p1);
+    gl.uniform2f(u1.grid, state.cols, state.rows);
+    gl.uniform1f(u1.t, t);
+    gl.uniform3f(u1.mouse, state.mouse.x, state.mouse.y, state.mouse.s);
+    gl.uniform4f(u1.hand, state.hand.dx, state.hand.dy, state.hand.spread, state.hand.press);
+    gl.uniform1f(u1.gust, gust);
+    gl.uniform2f(u1.word, wordPhase, wordOn);
+    gl.uniform4fv(u1.imps, imps);
+    gl.uniform2f(u1.seed, seed[0], seed[1]);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, maskTex);
+    gl.uniform1i(u1.mask, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.useProgram(p2);
+    gl.uniform2f(u2.res, canvas.width, canvas.height);
+    gl.uniform2f(u2.grid, state.cols, state.rows);
+    gl.uniform1f(u2.cell, state.cellDev);
+    gl.uniform1f(u2.t, t);
+    gl.uniform1f(u2.dim, state.dim);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, fieldTex);
+    gl.uniform1i(u2.field, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+  requestAnimationFrame(frame);
+
+  function pointTo(ev){
+    var x = (ev.touches ? ev.touches[0].clientX : ev.clientX);
+    var y = (ev.touches ? ev.touches[0].clientY : ev.clientY);
+    state.mouse.tx = x/state.cellPx;
+    state.mouse.ty = y/state.cellPx;
+    if(state.mouse.s < 0.05){
+      state.mouse.x = state.mouse.tx;
+      state.mouse.y = state.mouse.ty;
+    }
+    state.mouse.s = 1.0;
+  }
+  window.addEventListener("pointermove", pointTo, {passive:true});
+  window.addEventListener("touchmove", pointTo, {passive:true});
+  window.addEventListener("pointerdown", function(ev){ pressed = true; pointTo(ev); }, {passive:true});
+  window.addEventListener("pointerup", function(){ pressed = false; }, {passive:true});
+  window.addEventListener("pointercancel", function(){ pressed = false; }, {passive:true});
+  window.addEventListener("touchstart", function(ev){ pressed = true; pointTo(ev); }, {passive:true});
+  window.addEventListener("touchend", function(){ pressed = false; }, {passive:true});
+}
+
+/* ---------- ui ---------- */
+var projBtn = document.getElementById("projectsBtn");
+var projCv = document.createElement("canvas");
+projBtn.appendChild(projCv);
+var notesBtn = document.getElementById("notesBtn");
+var aboutCv = document.createElement("canvas");
+notesBtn.appendChild(aboutCv);
+var soundBtn = document.getElementById("soundBtn");
+var soundCv = document.createElement("canvas");
+soundBtn.appendChild(soundCv);
+var navEl = document.getElementById("nav");
+var projects = document.getElementById("projects");
+var notes = document.getElementById("notes");
+var hoverProj = false, hoverAbout = false, hoverSound = false;
+
+setTimeout(function(){ navEl.classList.add("shown"); }, 2600);
+projBtn.addEventListener("mouseenter", function(){ hoverProj = true; });
+projBtn.addEventListener("mouseleave", function(){ hoverProj = false; });
+notesBtn.addEventListener("mouseenter", function(){ hoverAbout = true; });
+notesBtn.addEventListener("mouseleave", function(){ hoverAbout = false; });
+soundBtn.addEventListener("mouseenter", function(){ hoverSound = true; });
+soundBtn.addEventListener("mouseleave", function(){ hoverSound = false; });
+soundBtn.addEventListener("click", function(){
+  var on = Sound.toggle();
+  soundBtn.setAttribute("aria-pressed", on ? "true" : "false");
+});
+
+function setHash(h){
+  if(history.replaceState) history.replaceState(null, "", h ? "#" + h : location.pathname + location.search);
+}
+function openOverlay(el, h){
+  el.classList.add("open");
+  state.dimTarget = 0.26;
+  state.bgScaleTarget = 0.06;
+  navEl.style.display = "none";
+  if(h) setHash(h);
+}
+function closeOverlays(){
+  projects.classList.remove("open");
+  notes.classList.remove("open");
+  state.dimTarget = 1;
+  state.bgScaleTarget = 1;
+  navEl.style.display = "";
+  setHash("");
+}
+projBtn.addEventListener("click", function(){ openOverlay(projects, "projects"); });
+notesBtn.addEventListener("click", function(){ openOverlay(notes, "about"); });
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeOverlays); });
+document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeOverlays(); });
+[projects, notes].forEach(function(ov){
+  ov.addEventListener("click", function(e){
+    if(e.target === ov || e.target.classList.contains("overlay-inner")) closeOverlays();
+  });
+});
+if(location.hash === "#projects") openOverlay(projects, "projects");
+if(location.hash === "#about") openOverlay(notes, "about");
+
+/* project selection: the marks come first, the words follow */
+var pitems = document.querySelectorAll(".pitem");
+var pcards = document.querySelectorAll(".pcard");
+var pHover = [false, false], pSel = 0;
+function selectProject(i){
+  pSel = i;
+  pitems.forEach(function(el){
+    var is = +el.dataset.p === i;
+    el.classList.toggle("sel", is);
+    el.setAttribute("aria-expanded", is ? "true" : "false");
+  });
+  pcards.forEach(function(el){ el.classList.toggle("show", +el.dataset.p === i); });
+}
+pitems.forEach(function(el){
+  el.addEventListener("click", function(){ selectProject(+el.dataset.p); });
+  el.addEventListener("mouseenter", function(){ pHover[+el.dataset.p] = true; });
+  el.addEventListener("mouseleave", function(){ pHover[+el.dataset.p] = false; });
+});
+selectProject(0);
+
+/* pixel glyph headings inside the panels */
+var caps = document.querySelectorAll(".pcap");
+var sectHeads = document.querySelectorAll(".sect-head");
+
+/* thumbnails: tiny led scenes drawn coarse then scaled by css pixelation */
+var thCos = document.getElementById("thumbCosmos");
+var thSt = document.getElementById("thumbStoop");
+function led(g, x, y, r, gr, b, br){
+  g.fillStyle = "rgb(" + Math.round(r*br) + "," + Math.round(gr*br) + "," + Math.round(b*br) + ")";
+  g.fillRect(x, y, 1, 1);
+}
+function hash2(x, y){
+  var s = Math.sin(x*127.1 + y*311.7)*43758.5453;
+  return s - Math.floor(s);
+}
+/* mark pixels share the name's life cycle: rain in, hold, erode, reform */
+function glyphState(h, p){
+  if(p < 0.33){
+    var a = p/0.33;
+    if(h > a) return 0;
+    if(h > a - 0.08) return 2;
+    return 1;
+  }
+  if(p < 0.80) return 1;
+  if(p < 0.93){
+    var h2 = hash2(h*91.7, h*17.3);
+    return (h2 < (p - 0.80)/0.13*0.95) ? 0 : 1;
+  }
+  return 0;
+}
+/* cosmos labs mark: the slashed circle in glowing purple pixels on black */
+function drawCosmos(g, t, hot){
+  var p = ((t + 2.0) % 12) / 12;
+  var lift = hot ? 1.25 : 1.0;
+  g.fillStyle = "#000";
+  g.fillRect(0, 0, 24, 24);
+  for(var y=0;y<24;y++){
+    for(var x=0;x<24;x++){
+      var dx = x - 11.5, dy = y - 11.5;
+      var d = Math.sqrt(dx*dx + dy*dy);
+      var ring = d >= 4.6 && d <= 7.4;
+      var bar = Math.abs(x + y - 23) <= 1.7 && x >= 2 && x <= 21;
+      if(ring || bar){
+        var st = glyphState(hash2(x, y), p);
+        if(st === 2){ led(g, x, y, 224, 204, 255, 1); continue; }
+        if(st === 1){
+          var n = Math.sin(x*2.1 + y*3.3 + t*2.4)*0.5+0.5;
+          led(g, x, y, 157, 102, 255, Math.min(1, (0.72 + 0.28*n)*lift));
+        }
+        continue;
+      }
+      var tw = hash2(x*3 + 7, y*5 + 1);
+      if(tw > 0.955){
+        var twb = Math.sin(t*3.0 + tw*40.0)*0.5+0.5;
+        led(g, x, y, 190, 170, 255, 0.15 + 0.45*twb);
+      }
+    }
+  }
+}
+/* stoop mark: cream s and sage dot, falling sage streaks behind */
+var STOOP_S = [
+"..########..",
+".##########.",
+"###......###",
+"###.........",
+"####........",
+"..#######...",
+".....#######",
+"........####",
+".........###",
+"###......###",
+".##########.",
+"..########.."
+];
+function drawStoop(g, t, hot){
+  var p = ((t + 7.0) % 12) / 12;
+  var lift = hot ? 1.15 : 1.0;
+  g.fillStyle = "#000";
+  g.fillRect(0, 0, 24, 24);
+  for(var i=0;i<4;i++){
+    var h = hash2(i*13 + 3, 5);
+    var sx = Math.floor(h*24);
+    var sp = 6 + 8*hash2(i*7 + 1, 9);
+    var sy = Math.floor((t*sp + h*100) % 30) - 3;
+    for(var k=0;k<3;k++){
+      if(sy + k < 0 || sy + k > 23) continue;
+      led(g, sx, sy + k, 126, 156, 135, 0.18 + 0.14*k);
+    }
+  }
+  for(var r=0;r<12;r++){
+    for(var c=0;c<12;c++){
+      if(STOOP_S[r][c] !== "#") continue;
+      var x = 3 + c, y = 6 + r;
+      var st = glyphState(hash2(x, y), p);
+      if(st === 0) continue;
+      if(st === 2){ led(g, x, y, 255, 255, 250, 1); continue; }
+      var n2 = Math.sin(x*1.7 + y*2.9 + t*2.0)*0.5+0.5;
+      led(g, x, y, 242, 245, 240, Math.min(1, (0.80 + 0.20*n2)*lift));
+    }
+  }
+  for(var py=0;py<4;py++){
+    for(var px=0;px<4;px++){
+      if((px===0||px===3) && (py===0||py===3)) continue;
+      var std = glyphState(hash2(17 + px, 14 + py), p);
+      if(std === 0) continue;
+      if(std === 2){ led(g, 17+px, 14+py, 210, 240, 220, 1); continue; }
+      var pn = Math.sin(t*1.6)*0.5+0.5;
+      led(g, 17+px, 14+py, 126, 156, 135, 0.82 + 0.18*pn);
+    }
+  }
+}
+
+var uiT0 = performance.now();
+function uiFrame(){
+  requestAnimationFrame(uiFrame);
+  if(document.hidden) return;
+  var t = reduced ? 0 : (performance.now() - uiT0)/1000;
+  var navScale = window.innerWidth < 640 ? 2 : 3;
+  drawWord(projCv, "PROJECTS", navScale, t, hoverProj);
+  drawWord(aboutCv, "ABOUT", navScale, t, hoverAbout);
+  drawWord(soundCv, "SOUND", navScale, t, hoverSound || Sound.isOn());
+  if(projects.classList.contains("open")){
+    caps.forEach(function(cv){
+      var i = +cv.parentNode.dataset.p;
+      drawWord(cv, cv.dataset.word, 2, t*0.7, pHover[i] || pSel === i);
+    });
+    drawCosmos(thCos.getContext("2d"), t, pHover[0] || pSel === 0);
+    drawStoop(thSt.getContext("2d"), t, pHover[1] || pSel === 1);
+  }
+  if(notes.classList.contains("open")){
+    sectHeads.forEach(function(cv){ drawWord(cv, cv.dataset.word, +cv.dataset.scale, t*0.7, false); });
+  }
+}
+requestAnimationFrame(uiFrame);
+})();
+</script>
+</html>

@@ -627,7 +627,7 @@ float drops(vec2 c, float t){
     float sp = (L==2) ? mix(0.7,1.6,fract(h*5.1)) : mix(5.0,15.0,fract(h*7.7));
     float len = mix(7.0, 22.0, fract(h*13.1));
     float cyc = u_grid.y + len + mix(24.0, 120.0, fract(h*3.3));
-    float startT = pow(fract(h*57.0), 0.75) * 13.0;
+    float startT = pow(fract(h*57.0), 0.75) * 5.0;
     float tt = max(t - startT, 0.0);
     float head = mod(tt*sp, cyc) - len;
     float d = head - c.y;
@@ -708,7 +708,7 @@ void main(){
   if(m.g > 0.5) col *= 0.40;
   if(m.r > 0.5){
     float hd = hash12(cell*2.17);
-    float born = smoothstep(1.5 + hd*4.0, 3.2 + hd*4.0, t);
+    float born = smoothstep(0.3 + hd*1.2, 1.1 + hd*1.2, t);
     float cyc = fract(t/18.0);
     float ero = smoothstep(0.80,0.87,cyc)*(1.0 - smoothstep(0.90,0.985,cyc));
     float gate = step(ero*0.92, hash12(cell*1.71 + floor(t/18.0)*31.0));
@@ -955,7 +955,7 @@ function rebuildRain(seedX, rows, cols){
       var sp = fr32((L===2) ? mixn(0.7,1.6,hf(5.1)) : mixn(5.0,15.0,hf(7.7)));
       var len = fr32(mixn(7.0, 22.0, hf(13.1)));
       var cyc = fr32(rows + len + fr32(mixn(24.0, 120.0, hf(3.3))));
-      var startT = fr32(Math.pow(hf(57.0), 0.75)*13.0);
+      var startT = fr32(Math.pow(hf(57.0), 0.75)*5.0);
       rainCols.push({x:x, L:L, sp:sp, len:len, cyc:cyc, st:startT, prevP:-1});
     }
   }
@@ -1072,7 +1072,7 @@ if(gl){
   window.addEventListener("resize", resize);
   resize();
 
-  var t0 = performance.now(), paused = false, lastNow = t0, bgT = 0;
+  var t0 = performance.now(), paused = false, lastNow = t0, bgT = reduced ? 4 : 0;
   var timeScale = reduced ? 0.05 : 1.0;
   document.addEventListener("visibilitychange", function(){
     paused = document.hidden;
@@ -1200,7 +1200,7 @@ var projects = document.getElementById("projects");
 var notes = document.getElementById("notes");
 var hoverProj = false, hoverAbout = false, hoverSound = false;
 
-setTimeout(function(){ navEl.classList.add("shown"); soundBtn.classList.add("shown"); }, 2600);
+setTimeout(function(){ navEl.classList.add("shown"); soundBtn.classList.add("shown"); }, 900);
 projBtn.addEventListener("mouseenter", function(){ hoverProj = true; });
 projBtn.addEventListener("mouseleave", function(){ hoverProj = false; });
 notesBtn.addEventListener("mouseenter", function(){ hoverAbout = true; });

@@ -1400,7 +1400,7 @@ function uiFrame(){
     if(Math.random() < 0.12) d += 380;
     nextType = performance.now() + d;
   }
-  if(sloganCv) drawWord(sloganCv, SLOGAN.slice(0, typeN).padEnd(SLOGAN.length, " "), navScale === 3 ? 2 : 1, t*0.8, false);
+  if(sloganCv) drawWord(sloganCv, SLOGAN.slice(0, typeN).padEnd(SLOGAN.length, " "), navScale, t*0.8, false);
   drawWord(projCv, "PROJECTS", navScale, t, hoverProj);
   drawWord(aboutCv, "ABOUT", navScale, t, hoverAbout);
   drawIcon(soundCv, navScale, t, hoverSound || Sound.isOn(), Sound.isOn());

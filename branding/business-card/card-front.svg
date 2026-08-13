@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1126" height="676" viewBox="0 0 1126 676">
+<defs><linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#e11a5f"/><stop offset="0.3" stop-color="#ff3ea0"/><stop offset="0.7" stop-color="#ff3ea0" stop-opacity="0"/>
+</linearGradient></defs>
+<rect width="1126" height="676" fill="#050507"/>
+<g shape-rendering="crispEdges" transform="translate(110,100) scale(8.25)">
+<rect x="0" y="5" width="1" height="1" fill="#e11a5f"/>
+<rect x="1" y="4" width="1" height="1" fill="#ff3ea0"/>
+<rect x="3" y="5" width="1" height="1" fill="#e11a5f"/>
+<rect x="5" y="3" width="1" height="1" fill="#ffe0f0"/>
+</g>
+<text x="216" y="136" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="35" font-weight="300" letter-spacing="8.4" fill="#f0ecf4">VICTOR LEPRI</text>
+<text x="216" y="176" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="14" letter-spacing="3.1" fill="#ff3ea0">TECHNOLOGY IS ART</text>
+<text x="110" y="524" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="15" letter-spacing="2.1" fill="#6a6475">hello@victorlepri.com</text>
+<text x="110" y="556" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="15" letter-spacing="2.1" fill="#6a6475">+1 (240) 535-3958</text>
+<text x="1016" y="524" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="14" letter-spacing="2" fill="#3a3445" text-anchor="end">victorlepri.com</text>
+<text x="1016" y="556" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="14" letter-spacing="2" fill="#3a3445" text-anchor="end">New York City</text>
+<rect x="0" y="670" width="1126" height="6" fill="url(#rule)"/>
+</svg>

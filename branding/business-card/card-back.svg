@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1126" height="676" viewBox="0 0 1126 676">
+<rect width="1126" height="676" fill="#050507"/>
+<g shape-rendering="crispEdges" transform="translate(479,180) scale(21)">
+<rect x="0" y="5" width="1" height="1" fill="#e11a5f"/>
+<rect x="1" y="4" width="1" height="1" fill="#ff3ea0"/>
+<rect x="3" y="5" width="1" height="1" fill="#e11a5f"/>
+<rect x="5" y="3" width="1" height="1" fill="#ffe0f0"/>
+</g>
+<text x="563" y="480" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="9" fill="#3a3445" text-anchor="middle">ART IS TECHNOLOGY</text>
+</svg>

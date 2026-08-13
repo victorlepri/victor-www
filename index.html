@@ -452,8 +452,9 @@ function drawWord(cv, word, scale, t, hot, vivid){
           var b = 0.55 + 0.45*n;
           if(hot) b = Math.min(1, b+0.35);
           if(vivid) b = Math.min(1, b + 0.22);
-          var col = b > 0.78 ? "255,224,240" : (vivid ? "255,93,178" : "255,124,196");
-          var al = vivid ? (0.8+0.2*b) : (0.55+0.45*b);
+          var thr = vivid ? 0.92 : 0.78;
+          var col = b > thr ? "255,224,240" : (vivid ? "255,80,172" : "255,124,196");
+          var al = vivid ? (0.85+0.15*b) : (0.55+0.45*b);
           g.fillStyle = "rgba(" + col + "," + al.toFixed(2) + ")";
           g.fillRect((x0+c)*scale, (pad+r)*scale, scale-1, scale-1);
         }

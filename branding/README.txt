@@ -43,6 +43,8 @@ EMAIL SIGNATURE
   Four HTML files: dark and light ground, each in two cuts, one with the
   site and phone, one with the site only. Host or embed the mark PNG
   (40 px versions included) and update the img src before pasting.
+  Each signature also ships as a ready PNG at double resolution; in
+  Apple Mail you can paste the PNG straight into the signature editor.
 
 CONTACT BLOCK
   hello@victorlepri.com

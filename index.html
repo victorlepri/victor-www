@@ -74,6 +74,13 @@
   html.pointer-mode button:focus-visible, html.pointer-mode a:focus-visible{
     outline:none;
   }
+  #slogan{
+    position:fixed;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:3;
+    pointer-events:none;
+  }
   #nav{
     position:fixed;
     left:50%;
@@ -308,6 +315,8 @@
 </style>
 
 <h1 class="sr">Victor Lepri Moreira</h1>
+<p class="sr" id="sloganSr"></p>
+<canvas id="slogan" aria-hidden="true"></canvas>
 <canvas id="field" aria-hidden="true"></canvas>
 
 <div id="nav">
@@ -1053,6 +1062,19 @@ if(gl){
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     buildMask();
     rebuildRain(seed[0], state.rows, state.cols);
+    /* seat the slogan just under the name */
+    var sw1 = wordWidth("VICTOR LEPRI");
+    var smidY = Math.round(state.rows*0.44);
+    var ss = Math.max(1, Math.floor((state.cols*0.86)/sw1));
+    var bottomRow;
+    if(sw1*ss <= state.cols*0.92){
+      bottomRow = smidY + 3.5*ss;
+    } else {
+      var ss2 = Math.max(1, Math.floor((state.cols*0.86)/wordWidth("VICTOR")));
+      bottomRow = smidY + 5*ss2 + 3.5*ss2;
+    }
+    var sloganEl = document.getElementById("slogan");
+    if(sloganEl) sloganEl.style.top = Math.round((bottomRow + 1.2)*state.cellPx) + "px";
   }
   window.addEventListener("resize", resize);
   resize();
@@ -1205,6 +1227,8 @@ function openOverlay(el, h, trigger){
   el.classList.add("open");
   state.dimTarget = 0.26;
   navEl.style.display = "none";
+  var sg = document.getElementById("slogan");
+  if(sg) sg.style.display = "none";
   if(h) setHash(h);
   lastTrigger = trigger || null;
   var cx = el.querySelector(".close-x");
@@ -1215,6 +1239,8 @@ function closeOverlays(){
   notes.classList.remove("open");
   state.dimTarget = 1;
   navEl.style.display = "";
+  var sg2 = document.getElementById("slogan");
+  if(sg2) sg2.style.display = "";
   setHash("");
   if(lastTrigger){ lastTrigger.focus(); lastTrigger = null; }
 }
@@ -1311,20 +1337,20 @@ function drawCosmos(g, t, hot){
     }
   }
 }
-/* stoop mark: cream s and sage dot, falling sage streaks behind */
+/* stoop mark: the cream stairs climbing right, falling sage streaks behind */
 var STOOP_S = [
-"..########..",
-".##########.",
-"###......###",
-"###.........",
-"####........",
-"..#######...",
-".....#######",
 "........####",
-".........###",
-"###......###",
-".##########.",
-"..########.."
+"........####",
+"........####",
+"........####",
+"....########",
+"....########",
+"....########",
+"....########",
+"############",
+"############",
+"############",
+"############"
 ];
 function drawStoop(g, t, hot){
   var p = ((t + 7.0) % 12) / 12;
@@ -1352,24 +1378,29 @@ function drawStoop(g, t, hot){
       led(g, x, y, 242, 245, 240, Math.min(1, (0.80 + 0.20*n2)*lift));
     }
   }
-  for(var py=0;py<4;py++){
-    for(var px=0;px<4;px++){
-      if((px===0||px===3) && (py===0||py===3)) continue;
-      var std = glyphState(hash2(17 + px, 14 + py), p);
-      if(std === 0) continue;
-      if(std === 2){ led(g, 17+px, 14+py, 210, 240, 220, 1); continue; }
-      var pn = Math.sin(t*1.6)*0.5+0.5;
-      led(g, 17+px, 14+py, 126, 156, 135, 0.82 + 0.18*pn);
-    }
-  }
 }
 
 var uiT0 = performance.now();
+/* the slogan types itself, one of two truths per visit */
+var SLOGAN = Math.random() < 0.5 ? "TECHNOLOGY IS ART" : "ART IS TECHNOLOGY";
+var sloganCv = document.getElementById("slogan");
+var sloganSr = document.getElementById("sloganSr");
+if(sloganSr) sloganSr.textContent = SLOGAN;
+var typeN = reduced ? SLOGAN.length : 0;
+var nextType = uiT0 + 1400;
 function uiFrame(){
   requestAnimationFrame(uiFrame);
   if(document.hidden) return;
   var t = reduced ? 0 : (performance.now() - uiT0)/1000;
   var navScale = window.innerWidth < 640 ? 2 : 3;
+  if(typeN < SLOGAN.length && performance.now() >= nextType){
+    typeN++;
+    var d = 90 + Math.random()*240;
+    if(SLOGAN[typeN-1] === " ") d += 160;
+    if(Math.random() < 0.12) d += 380;
+    nextType = performance.now() + d;
+  }
+  if(sloganCv) drawWord(sloganCv, SLOGAN.slice(0, typeN).padEnd(SLOGAN.length, " "), navScale === 3 ? 2 : 1, t*0.8, false);
   drawWord(projCv, "PROJECTS", navScale, t, hoverProj);
   drawWord(aboutCv, "ABOUT", navScale, t, hoverAbout);
   drawIcon(soundCv, navScale, t, hoverSound || Sound.isOn(), Sound.isOn());

@@ -65,10 +65,14 @@
     border:none;
     cursor:pointer;
     padding:0;
+    -webkit-tap-highlight-color:transparent;
   }
   button:focus-visible, a:focus-visible{
     outline:1px solid var(--pink);
     outline-offset:4px;
+  }
+  html.pointer-mode button:focus-visible, html.pointer-mode a:focus-visible{
+    outline:none;
   }
   #nav{
     position:fixed;
@@ -1213,6 +1217,8 @@ function closeOverlays(){
   setHash("");
   if(lastTrigger){ lastTrigger.focus(); lastTrigger = null; }
 }
+addEventListener("pointerdown", function(){ document.documentElement.classList.add("pointer-mode"); }, {passive:true});
+addEventListener("keydown", function(e){ if(e.key === "Tab") document.documentElement.classList.remove("pointer-mode"); });
 projBtn.addEventListener("click", function(){ openOverlay(projects, "projects", projBtn); });
 notesBtn.addEventListener("click", function(){ openOverlay(notes, "about", notesBtn); });
 document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", closeOverlays); });

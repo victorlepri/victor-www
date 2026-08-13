@@ -451,10 +451,9 @@ function drawWord(cv, word, scale, t, hot, vivid){
           var n = Math.sin((i*5+c)*3.7 + r*1.9 + t*2.2)*0.5+0.5;
           var b = 0.55 + 0.45*n;
           if(hot) b = Math.min(1, b+0.35);
-          if(vivid) b = Math.min(1, b + 0.22);
-          var thr = vivid ? 0.92 : 0.78;
-          var col = b > thr ? "255,224,240" : (vivid ? "255,80,172" : "255,124,196");
-          var al = vivid ? (0.85+0.15*b) : (0.55+0.45*b);
+          b = Math.min(1, b + 0.22);
+          var col = b > 0.92 ? "255,224,240" : "255,80,172";
+          var al = 0.85+0.15*b;
           g.fillStyle = "rgba(" + col + "," + al.toFixed(2) + ")";
           g.fillRect((x0+c)*scale, (pad+r)*scale, scale-1, scale-1);
         }
@@ -490,8 +489,9 @@ function drawIcon(cv, scale, t, hot, waves){
       var n = Math.sin(c*3.7 + r*1.9 + t*2.2)*0.5+0.5;
       var b = 0.55 + 0.45*n;
       if(hot) b = Math.min(1, b+0.35);
-      var col = b > 0.78 ? "255,224,240" : "255,124,196";
-      g.fillStyle = "rgba(" + col + "," + (0.55+0.45*b).toFixed(2) + ")";
+      b = Math.min(1, b + 0.22);
+      var col = b > 0.92 ? "255,224,240" : "255,80,172";
+      g.fillStyle = "rgba(" + col + "," + (0.85+0.15*b).toFixed(2) + ")";
       g.fillRect((pad+c)*scale, (pad+r)*scale, scale-1, scale-1);
     }
   }

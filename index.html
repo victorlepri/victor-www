@@ -1380,7 +1380,7 @@ function drawStoop(g, t, hot){
   for(var r=0;r<12;r++){
     for(var c=0;c<12;c++){
       if(STOOP_S[r][c] !== "#") continue;
-      var x = 3 + c, y = 6 + r;
+      var x = 6 + c, y = 6 + r;
       var st = glyphState(hash2(x, y), p);
       if(st === 0) continue;
       if(st === 2){ led(g, x, y, 255, 255, 250, 1); continue; }

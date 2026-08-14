@@ -47,6 +47,8 @@ LETTERHEAD
   are the ready print files at true letter size. letterhead.docx is the
   everyday typing sheet on the white ground with the header and footer
   already set; it asks for Consolas and falls back to any mono.
+  letterhead-dark.docx is the same sheet on the dark stage; Word must
+  show background colors for the page to read dark, and it types in ink.
 
 EMAIL SIGNATURE
   Four HTML files: dark and light ground, each in two cuts, one with the

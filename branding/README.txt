@@ -63,3 +63,18 @@ CONTACT BLOCK
   hello@victorlepri.com
   +1 (240) 535-3958
   victorlepri.com
+
+LAYERED FILES FOR DESIGNERS
+
+  every piece now ships as a layered photoshop file next to its master.
+  card front and back, both letterheads, and both email signatures each
+  carry one psd where the ground, the mark, the name, the slogans, the
+  contact lines, and the gradient rule sit on their own named layers.
+  the type arrives rasterized at full print size; set any new type in a
+  mono cut such as Menlo or Consolas.
+
+  the svg masters carry the same structure: each element lives in its
+  own named layer group, so Inkscape and Illustrator open them with the
+  layers panel already sorted. the email signature also gains true svg
+  masters, signature-dark.svg and signature-light.svg, built to twice
+  the html scale.

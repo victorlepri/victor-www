@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="740" height="184" viewBox="0 0 740 184">
+<!--L:ground-->
+<g inkscape:groupmode="layer" id="layer-ground" inkscape:label="the ground">
+<rect width="740" height="184" fill="#0e0e14"/>
+</g>
+<!--/L-->
+<!--L:mark-->
+<g inkscape:groupmode="layer" id="layer-mark" inkscape:label="the mark">
+<g shape-rendering="crispEdges" transform="translate(40,52) scale(10)">
+<rect x="1" y="5" width="1" height="1" fill="#e11a5f"/>
+<rect x="2" y="4" width="1" height="1" fill="#ff3ea0"/>
+<rect x="4" y="5" width="1" height="1" fill="#e11a5f"/>
+<rect x="6" y="3" width="1" height="1" fill="#ffe0f0"/>
+</g>
+</g>
+<!--/L-->
+<!--L:divider-->
+<g inkscape:groupmode="layer" id="layer-divider" inkscape:label="the divider">
+<rect x="180" y="32" width="2" height="120" fill="#1a1a24"/>
+</g>
+<!--/L-->
+<!--L:name-->
+<g inkscape:groupmode="layer" id="layer-name" inkscape:label="the name">
+<text x="220" y="72" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="28" letter-spacing="6" fill="#f0ecf4">VICTOR LEPRI</text>
+</g>
+<!--/L-->
+<!--L:slogan-->
+<g inkscape:groupmode="layer" id="layer-slogan" inkscape:label="the slogan">
+<text x="220" y="108" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="20" letter-spacing="4" fill="#e11a5f">TECHNOLOGY IS ART</text>
+</g>
+<!--/L-->
+<!--L:contact-->
+<g inkscape:groupmode="layer" id="layer-contact" inkscape:label="the contact">
+<text x="220" y="144" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="20" letter-spacing="2" fill="#6a6475">victorlepri.com &#183; +1 (240) 535-3958</text>
+</g>
+<!--/L-->
+</svg>

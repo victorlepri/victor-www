@@ -5,8 +5,11 @@ The voice: everything speaks ui monospace. On machines without Menlo or
 Consolas the files fall back to another monospace; for final print ask the
 shop to substitute Menlo if they have it, or accept the fallback for tests.
 
-Slogans: the front of the card says TECHNOLOGY IS ART, the back answers
-ART IS TECHNOLOGY. The letterhead carries ART IS TECHNOLOGY.
+Slogans: the front of the card says ART IS TECHNOLOGY under the name,
+the back answers TECHNOLOGY IS ART. The letterhead carries TECHNOLOGY
+IS ART. The card is the deep thread cut: contact lines print in full
+ink, the site line prints in the deep magenta of the slogan, and the
+city line is retired everywhere.
 
 PALETTE
   background   #050507
@@ -31,14 +34,19 @@ BUSINESS CARD
   at 300 dpi, so the full canvas is 3.75 by 2.25 inches (1126 by 676 px).
   Keep text inside the safe zone, a quarter inch from trim. Print the SVG
   masters if the shop takes vectors; the PNG proofs are for checking color
-  and for shops that want raster. Rich black: ask for a deep black or
-  approximate #050507; plain 100K black also reads fine at this size.
+  and for shops that want raster. card-print.pdf is the ready file, two
+  pages, front then back, at the full 3.75 by 2.25 with bleed baked in.
+  Rich black: ask for a deep black or approximate #050507; plain 100K
+  black also reads fine at this size.
 
 LETTERHEAD
   US letter, 8.5 by 11 inches at 300 dpi, in two grounds. The dark page is
   for moments; the white page is the everyday sheet and prints kindly on
   any office machine. On the white ground the light mark palette applies
-  and blue takes over for glow.
+  and blue takes over for glow. letterhead.pdf and letterhead-light.pdf
+  are the ready print files at true letter size. letterhead.docx is the
+  everyday typing sheet on the white ground with the header and footer
+  already set; it asks for Consolas and falls back to any mono.
 
 EMAIL SIGNATURE
   Four HTML files: dark and light ground, each in two cuts, one with the
@@ -53,4 +61,3 @@ CONTACT BLOCK
   hello@victorlepri.com
   +1 (240) 535-3958
   victorlepri.com
-  New York City

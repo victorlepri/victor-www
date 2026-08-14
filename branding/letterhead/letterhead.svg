@@ -10,8 +10,8 @@
 <rect x="6" y="3" width="1" height="1" fill="#ffe0f0"/>
 </g>
 <text x="390" y="268" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="44" font-weight="300" letter-spacing="10.5" fill="#f0ecf4">VICTOR LEPRI</text>
-<text x="390" y="318" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="20" letter-spacing="4.4" fill="#ff3ea0">ART IS TECHNOLOGY</text>
+<text x="390" y="318" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="20" letter-spacing="4.4" fill="#e11a5f">TECHNOLOGY IS ART</text>
 <text x="225" y="3105" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="22" letter-spacing="3" fill="#3a3445">hello@victorlepri.com &#183; +1 (240) 535-3958</text>
-<text x="2325" y="3105" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="22" letter-spacing="3" fill="#3a3445" text-anchor="end">victorlepri.com &#183; New York City</text>
+<text x="2325" y="3105" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="22" letter-spacing="3" fill="#3a3445" text-anchor="end">victorlepri.com</text>
 <rect x="0" y="3288" width="2550" height="12" fill="url(#rule)"/>
 </svg>

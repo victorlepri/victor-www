@@ -7,7 +7,7 @@
 <!--/L-->
 <!--L:the mark-->
 <g inkscape:groupmode="layer" id="layer-the mark" inkscape:label="the mark">
-<g shape-rendering="crispEdges" transform="translate(48,48) scale(9)">
+<g shape-rendering="crispEdges" transform="translate(64,64) scale(9)">
 <rect x="1" y="5" width="1" height="1" fill="#e11a5f"/>
 <rect x="2" y="4" width="1" height="1" fill="#ff3ea0"/>
 <rect x="4" y="5" width="1" height="1" fill="#e11a5f"/>
@@ -17,27 +17,27 @@
 <!--/L-->
 <!--L:the name-->
 <g inkscape:groupmode="layer" id="layer-the name" inkscape:label="the name">
-<text x="160" y="86" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="27" letter-spacing="6.5" fill="#f0ecf4" font-weight="300">VICTOR LEPRI</text>
+<text x="176" y="98" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="27" letter-spacing="6.5" fill="#f0ecf4" font-weight="300">VICTOR LEPRI</text>
 </g>
 <!--/L-->
 <!--L:the front slogan-->
 <g inkscape:groupmode="layer" id="layer-the front slogan" inkscape:label="the front slogan">
-<text x="160" y="119" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="13" letter-spacing="2.888888888888889" fill="#e11a5f" font-weight="300">ART IS TECHNOLOGY</text>
+<text x="176" y="131" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="13" letter-spacing="2.888888888888889" fill="#e11a5f" font-weight="300">ART IS TECHNOLOGY</text>
 </g>
 <!--/L-->
 <!--L:the email-->
 <g inkscape:groupmode="layer" id="layer-the email" inkscape:label="the email">
-<text x="48" y="701" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#f0ecf4" font-weight="300">hello@victorlepri.com</text>
+<text x="64" y="685" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#f0ecf4" font-weight="300">hello@victorlepri.com</text>
 </g>
 <!--/L-->
 <!--L:the phone-->
 <g inkscape:groupmode="layer" id="layer-the phone" inkscape:label="the phone">
-<text x="48" y="741" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#f0ecf4" font-weight="300">+1 (240) 535-3958</text>
+<text x="64" y="725" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#f0ecf4" font-weight="300">+1 (240) 535-3958</text>
 </g>
 <!--/L-->
 <!--L:the site-->
 <g inkscape:groupmode="layer" id="layer-the site" inkscape:label="the site">
-<text x="765" y="741" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#e11a5f" font-weight="300" text-anchor="end">victorlepri.com</text>
+<text x="749" y="725" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#e11a5f" font-weight="300" text-anchor="end">victorlepri.com</text>
 </g>
 <!--/L-->
 <!--L:the gradient rule-->

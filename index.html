@@ -506,7 +506,7 @@ function drawIcon(cv, scale, t, hot, waves){
       var b = 0.55 + 0.45*n;
       if(hot) b = Math.min(1, b+0.35);
       b = Math.min(1, b + 0.22);
-      var col = n > 0.75 ? "255,224,240" : "255,80,172";
+      var col = b > 0.92 ? "255,224,240" : "255,80,172";
       g.fillStyle = "rgba(" + col + "," + (0.85+0.15*b).toFixed(2) + ")";
       g.fillRect((pad+c)*scale, (pad+r)*scale, scale-1, scale-1);
     }

@@ -451,11 +451,15 @@ Z:["11111","00001","00010","00100","01000","10000","11111"],
 function wordWidth(w){ return w.length*6 - 1; }
 
 /* draws a word into a 2d canvas as glowing led pixels */
-function drawWord(cv, word, scale, t, hot, vivid){
+function drawWord(cv, word, scale, t, hot, vivid, hd){
+  /* hd renders at three times the cell and fills two thirds, the same duty cycle as the nav, then sits at its own css size */
+  var S = hd ? scale*3 : scale;
+  var fillS = hd ? scale*2 : scale - 1;
   var wpx = wordWidth(word), hpx = 7;
   var pad = 2;
-  var W = (wpx + pad*2)*scale, H = (hpx + pad*2)*scale;
-  if(cv.width !== W){ cv.width = W; cv.height = H; cv.style.width = W + "px"; cv.style.height = H + "px"; }
+  var W = (wpx + pad*2)*S, H = (hpx + pad*2)*S;
+  var cssW = (wpx + pad*2)*scale, cssH = (hpx + pad*2)*scale;
+  if(cv.width !== W){ cv.width = W; cv.height = H; cv.style.width = cssW + "px"; cv.style.height = cssH + "px"; }
   var g = cv.getContext("2d");
   g.clearRect(0,0,W,H);
   var x0 = pad;
@@ -471,7 +475,7 @@ function drawWord(cv, word, scale, t, hot, vivid){
           var col = b > 0.92 ? "255,224,240" : "255,80,172";
           var al = 0.85+0.15*b;
           g.fillStyle = "rgba(" + col + "," + al.toFixed(2) + ")";
-          g.fillRect((x0+c)*scale, (pad+r)*scale, scale-1, scale-1);
+          g.fillRect((x0+c)*S, (pad+r)*S, fillS, fillS);
         }
       }
     }
@@ -1444,13 +1448,13 @@ function uiFrame(){
   if(projects.classList.contains("open")){
     caps.forEach(function(cv){
       var i = +cv.parentNode.dataset.p;
-      drawWord(cv, cv.dataset.word, 2, t*0.7, pHover[i] || pSel === i, true);
+      drawWord(cv, cv.dataset.word, 2, t*0.7, pHover[i] || pSel === i, true, true);
     });
     drawCosmos(thCos.getContext("2d"), t, pHover[0] || pSel === 0);
     drawStoop(thSt.getContext("2d"), t, pHover[1] || pSel === 1);
   }
   if(notes.classList.contains("open")){
-    sectHeads.forEach(function(cv){ drawWord(cv, cv.dataset.word, +cv.dataset.scale, t*0.7, false, true); });
+    sectHeads.forEach(function(cv){ drawWord(cv, cv.dataset.word, +cv.dataset.scale, t*0.7, false, true, true); });
   }
 }
 requestAnimationFrame(uiFrame);

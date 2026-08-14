@@ -4,10 +4,10 @@
 </linearGradient></defs>
 <rect width="2550" height="3300" fill="#ffffff"/>
 <g shape-rendering="crispEdges" transform="translate(225,205) scale(13)">
-<rect x="0" y="5" width="1" height="1" fill="#c41555"/>
-<rect x="1" y="4" width="1" height="1" fill="#e0287a"/>
-<rect x="3" y="5" width="1" height="1" fill="#c41555"/>
-<rect x="5" y="3" width="1" height="1" fill="#2a48ff"/>
+<rect x="1" y="5" width="1" height="1" fill="#c41555"/>
+<rect x="2" y="4" width="1" height="1" fill="#e0287a"/>
+<rect x="4" y="5" width="1" height="1" fill="#c41555"/>
+<rect x="6" y="3" width="1" height="1" fill="#2a48ff"/>
 </g>
 <text x="390" y="268" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="44" font-weight="300" letter-spacing="10.5" fill="#0d0c10">VICTOR LEPRI</text>
 <text x="390" y="318" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="20" letter-spacing="4.4" fill="#c41555">ART IS TECHNOLOGY</text>

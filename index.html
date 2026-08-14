@@ -520,6 +520,7 @@ var canvas = document.getElementById("field");
 var gl = canvas.getContext("webgl2", {antialias:false, alpha:false});
 if(!gl){
   document.getElementById("fallback").style.display = "grid";
+  document.getElementById("slogan").style.display = "none";
   canvas.style.display = "none";
 }
 

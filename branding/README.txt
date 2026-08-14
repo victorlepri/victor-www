@@ -19,9 +19,10 @@ PALETTE
   light ground #f8f6fa with pixels #c41555 #e0287a #2a48ff
 
 THE MARK
-  An 8 by 8 grid with four lit pixels: (0,5) magenta, (1,4) pink,
-  (3,5) magenta, (5,3) glow. The favicon cut alone shifts one column
-  right for breathing room; use mark-favicon.svg only for browser tabs.
+  An 8 by 8 grid with four lit pixels: (1,5) magenta, (2,4) pink,
+  (4,5) magenta, (6,3) glow. Every cut now carries the same gap the
+  favicon wears, one empty column before the first pixel, so the mark
+  never touches an edge. The favicon is simply the same mark on its chip.
   On dark surfaces the chip must match the surface color exactly.
   On light surfaces use mark-light.svg, where blue takes over for glow.
 

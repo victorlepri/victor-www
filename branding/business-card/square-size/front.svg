@@ -5,6 +5,11 @@
 <rect width="813" height="813" fill="#050507"/>
 </g>
 <!--/L-->
+<!--L:the gradient rule-->
+<g inkscape:groupmode="layer" id="layer-the gradient rule" inkscape:label="the gradient rule">
+<rect x="0" y="741" width="813" height="72" fill="url(#rule)"/>
+</g>
+<!--/L-->
 <!--L:the mark-->
 <g inkscape:groupmode="layer" id="layer-the mark" inkscape:label="the mark">
 <g shape-rendering="crispEdges" transform="translate(64,64) scale(9)">
@@ -27,22 +32,17 @@
 <!--/L-->
 <!--L:the email-->
 <g inkscape:groupmode="layer" id="layer-the email" inkscape:label="the email">
-<text x="64" y="685" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#f0ecf4" font-weight="300">hello@victorlepri.com</text>
+<text x="64" y="665" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#f0ecf4" font-weight="300">hello@victorlepri.com</text>
 </g>
 <!--/L-->
 <!--L:the phone-->
 <g inkscape:groupmode="layer" id="layer-the phone" inkscape:label="the phone">
-<text x="64" y="725" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#f0ecf4" font-weight="300">+1 (240) 535-3958</text>
+<text x="64" y="705" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#f0ecf4" font-weight="300">+1 (240) 535-3958</text>
 </g>
 <!--/L-->
 <!--L:the site-->
 <g inkscape:groupmode="layer" id="layer-the site" inkscape:label="the site">
-<text x="749" y="725" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#e11a5f" font-weight="300" text-anchor="end">victorlepri.com</text>
-</g>
-<!--/L-->
-<!--L:the gradient rule-->
-<g inkscape:groupmode="layer" id="layer-the gradient rule" inkscape:label="the gradient rule">
-<rect x="0" y="807" width="813" height="6" fill="url(#rule)"/>
+<text x="749" y="705" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="17" letter-spacing="2.4" fill="#e11a5f" font-weight="300" text-anchor="end">victorlepri.com</text>
 </g>
 <!--/L-->
 </svg>

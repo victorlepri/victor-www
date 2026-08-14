@@ -78,3 +78,10 @@ LAYERED FILES FOR DESIGNERS
   layers panel already sorted. the email signature also gains true svg
   masters, signature-dark.svg and signature-light.svg, built to twice
   the html scale.
+
+  the mark itself also ships loose for play. marks/mark.pptx holds two
+  slides, the dark ground and the light, with each pixel as a native
+  powerpoint shape ready for any recolor. mark-dark.svg and
+  mark-light.svg now carry each pixel in its own named layer for the
+  same play in Inkscape or Illustrator.
+

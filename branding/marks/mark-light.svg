@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 8 8" shape-rendering="crispEdges">
-<rect width="8" height="8" fill="#f8f6fa"/>
-<rect x="1" y="5" width="1" height="1" fill="#c41555"/>
-<rect x="2" y="4" width="1" height="1" fill="#e0287a"/>
-<rect x="4" y="5" width="1" height="1" fill="#c41555"/>
-<rect x="6" y="3" width="1" height="1" fill="#2a48ff"/>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="512" height="512" viewBox="0 0 8 8" shape-rendering="crispEdges">
+<g inkscape:groupmode="layer" id="layer-ground" inkscape:label="the ground"><rect width="8" height="8" fill="#f8f6fa"/></g>
+<g inkscape:groupmode="layer" id="layer-pixel-1" inkscape:label="pixel one, the low left"><rect x="1" y="5" width="1" height="1" fill="#c41555"/></g>
+<g inkscape:groupmode="layer" id="layer-pixel-2" inkscape:label="pixel two, the rise"><rect x="2" y="4" width="1" height="1" fill="#e0287a"/></g>
+<g inkscape:groupmode="layer" id="layer-pixel-3" inkscape:label="pixel three, the echo"><rect x="4" y="5" width="1" height="1" fill="#c41555"/></g>
+<g inkscape:groupmode="layer" id="layer-pixel-4" inkscape:label="pixel four, the spark"><rect x="6" y="3" width="1" height="1" fill="#2a48ff"/></g>
 </svg>

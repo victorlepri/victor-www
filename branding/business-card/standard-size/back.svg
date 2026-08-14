@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="1098" height="648" viewBox="0 0 1098 648">
+<defs><linearGradient id="rule" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e11a5f"/><stop offset="0.3" stop-color="#ff3ea0"/><stop offset="0.7" stop-color="#ff3ea0" stop-opacity="0"/></linearGradient></defs>
+<!--L:the ground-->
+<g inkscape:groupmode="layer" id="layer-the ground" inkscape:label="the ground">
+<rect width="1098" height="648" fill="#050507"/>
+</g>
+<!--/L-->
+<!--L:the mark-->
+<g inkscape:groupmode="layer" id="layer-the mark" inkscape:label="the mark">
+<g shape-rendering="crispEdges" transform="translate(473.00,154) scale(19)">
+<rect x="1" y="5" width="1" height="1" fill="#e11a5f"/>
+<rect x="2" y="4" width="1" height="1" fill="#ff3ea0"/>
+<rect x="4" y="5" width="1" height="1" fill="#e11a5f"/>
+<rect x="6" y="3" width="1" height="1" fill="#ffe0f0"/>
+</g>
+</g>
+<!--/L-->
+<!--L:the answer-->
+<g inkscape:groupmode="layer" id="layer-the answer" inkscape:label="the answer">
+<text x="549.0" y="488" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="19" letter-spacing="8" fill="#f0ecf4" font-weight="300" text-anchor="middle">TECHNOLOGY IS ART</text>
+</g>
+<!--/L-->
+</svg>

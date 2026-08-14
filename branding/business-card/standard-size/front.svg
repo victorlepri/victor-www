@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="1098" height="648" viewBox="0 0 1098 648">
+<defs><linearGradient id="rule" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e11a5f"/><stop offset="0.3" stop-color="#ff3ea0"/><stop offset="0.7" stop-color="#ff3ea0" stop-opacity="0"/></linearGradient></defs>
+<!--L:the ground-->
+<g inkscape:groupmode="layer" id="layer-the ground" inkscape:label="the ground">
+<rect width="1098" height="648" fill="#050507"/>
+</g>
+<!--/L-->
+<!--L:the mark-->
+<g inkscape:groupmode="layer" id="layer-the mark" inkscape:label="the mark">
+<g shape-rendering="crispEdges" transform="translate(48,54) scale(8)">
+<rect x="1" y="5" width="1" height="1" fill="#e11a5f"/>
+<rect x="2" y="4" width="1" height="1" fill="#ff3ea0"/>
+<rect x="4" y="5" width="1" height="1" fill="#e11a5f"/>
+<rect x="6" y="3" width="1" height="1" fill="#ffe0f0"/>
+</g>
+</g>
+<!--/L-->
+<!--L:the name-->
+<g inkscape:groupmode="layer" id="layer-the name" inkscape:label="the name">
+<text x="138" y="94" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="32" letter-spacing="7.4" fill="#f0ecf4" font-weight="300">VICTOR LEPRI</text>
+</g>
+<!--/L-->
+<!--L:the front slogan-->
+<g inkscape:groupmode="layer" id="layer-the front slogan" inkscape:label="the front slogan">
+<text x="138" y="132" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="15" letter-spacing="3.3333333333333335" fill="#e11a5f" font-weight="300">ART IS TECHNOLOGY</text>
+</g>
+<!--/L-->
+<!--L:the email-->
+<g inkscape:groupmode="layer" id="layer-the email" inkscape:label="the email">
+<text x="48" y="558" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="20" letter-spacing="2.6" fill="#f0ecf4" font-weight="300">hello@victorlepri.com</text>
+</g>
+<!--/L-->
+<!--L:the phone-->
+<g inkscape:groupmode="layer" id="layer-the phone" inkscape:label="the phone">
+<text x="48" y="597" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="20" letter-spacing="2.6" fill="#f0ecf4" font-weight="300">+1 (240) 535-3958</text>
+</g>
+<!--/L-->
+<!--L:the site-->
+<g inkscape:groupmode="layer" id="layer-the site" inkscape:label="the site">
+<text x="1050" y="597" font-family="Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="20" letter-spacing="2.6" fill="#e11a5f" font-weight="300" text-anchor="end">victorlepri.com</text>
+</g>
+<!--/L-->
+<!--L:the gradient rule-->
+<g inkscape:groupmode="layer" id="layer-the gradient rule" inkscape:label="the gradient rule">
+<rect x="0" y="642" width="1098" height="6" fill="url(#rule)"/>
+</g>
+<!--/L-->
+</svg>
